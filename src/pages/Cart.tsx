@@ -1,6 +1,6 @@
 // src/pages/Cart.tsx
-import { useCart } from '../state/cart'
 import { useMemo, useEffect } from 'react'
+import { useCart } from '../state/cart'
 import { setTitle } from '../utils/seo'
 
 const CHECKOUT_ENABLED = import.meta.env.VITE_CHECKOUT_ENABLED === 'true'
@@ -25,12 +25,14 @@ export default function Cart() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          items: items.map(i => ({ stripePriceId: i.stripePriceId, qty: i.qty })),
+          items: items.map((i) => ({ stripePriceId: i.stripePriceId, qty: i.qty })),
         }),
       })
 
       let payload: any = {}
-      try { payload = await r.json() } catch {}
+      try {
+        payload = await r.json()
+      } catch {}
 
       if (!r.ok || !payload?.url) {
         alert(payload?.error || 'Checkout is not configured yet.')
@@ -43,14 +45,14 @@ export default function Cart() {
   }
 
   return (
-    <main style={{ padding: '24px 20px', maxWidth: 900, margin: '0 auto', color: '#e6edf3' }}>
+    <main style={{ padding: '24px 20px', maxWidth: 900, margin: '0 auto', color: 'var(--text)' }}>
       <h1>Cart</h1>
       {items.length === 0 ? (
-        <p style={{ color: '#9fb3c8' }}>Your cart is empty.</p>
+        <p style={{ color: 'var(--text-dim)' }}>Your cart is empty.</p>
       ) : (
         <>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {items.map(i => (
+            {items.map((i) => (
               <li
                 key={i.productId + i.variantId}
                 style={{
@@ -58,50 +60,54 @@ export default function Cart() {
                   gridTemplateColumns: '1fr 160px 100px 100px',
                   gap: 12,
                   alignItems: 'center',
-                  borderBottom: '1px solid #1f2a44',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
                   padding: '10px 0',
                 }}
               >
                 <div>
                   <div style={{ fontWeight: 600 }}>{i.name}</div>
-                  <div style={{ fontSize: 12, color: '#9fb3c8' }}>{i.label}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{i.label}</div>
                 </div>
                 <input
                   type="number"
                   min={1}
                   max={99}
                   value={i.qty}
-                  onChange={e =>
-                    setQty(
-                      i.productId,
-                      i.variantId,
-                      clamp(parseInt(e.target.value || '1', 10))
-                    )
+                  onChange={(e) =>
+                    setQty(i.productId, i.variantId, clamp(parseInt(e.target.value || '1', 10)))
                   }
-                  style={{ padding: '6px 8px' }}
+                  style={{
+                    padding: '6px 8px',
+                    background: 'var(--bg-2)',
+                    color: 'var(--text)',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: 6,
+                  }}
                 />
-                <button onClick={() => remove(i.productId, i.variantId)} style={{ padding: '8px 10px' }}>
+                <button
+                  onClick={() => remove(i.productId, i.variantId)}
+                  className="btn"
+                  style={{ padding: '10px 14px', background: 'var(--bg-2)', color: 'var(--text)' }}
+                >
                   Remove
                 </button>
               </li>
             ))}
           </ul>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 16 }}>
-            <div style={{ color: '#9fb3c8' }}>Items: {totalQty}</div>
+            <div style={{ color: 'var(--text-dim)' }}>Items: {totalQty}</div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={clear} style={{ padding: '10px 14px' }}>Clear</button>
+              <button
+                onClick={clear}
+                className="btn"
+                style={{ background: 'var(--bg-2)', color: 'var(--text)' }}
+              >
+                Clear
+              </button>
               <button
                 disabled={!CHECKOUT_ENABLED || items.length === 0}
                 onClick={checkout}
-                style={{
-                  background: '#53b1f0',
-                  color: '#0b1220',
-                  padding: '10px 14px',
-                  borderRadius: 8,
-                  fontWeight: 700,
-                  opacity: !CHECKOUT_ENABLED || items.length === 0 ? 0.6 : 1,
-                  cursor: !CHECKOUT_ENABLED || items.length === 0 ? 'not-allowed' : 'pointer',
-                }}
+                className="btn"
               >
                 Checkout
               </button>

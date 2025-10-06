@@ -1,6 +1,5 @@
-//src/state/cart.ts
-
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { z } from 'zod'
 
 const CartItem = z.object({
@@ -21,25 +20,42 @@ type CartState = {
   clear: () => void
 }
 
-export const useCart = create<CartState>((set) => ({
-  items: [],
-  add: (item) =>
-    set((s) => {
-      const i = s.items.findIndex(
-        (x) => x.productId === item.productId && x.variantId === item.variantId,
-      )
-      if (i >= 0) {
-        const items = s.items.slice()
-        items[i] = { ...items[i], qty: Math.min(99, items[i].qty + item.qty) }
-        return { items }
-      }
-      return { items: [...s.items, item] }
+export const useCart = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
+      add: (item) =>
+        set((s) => {
+          const i = s.items.findIndex(
+            (x) => x.productId === item.productId && x.variantId === item.variantId
+          )
+          if (i >= 0) {
+            const items = s.items.slice()
+            const existing = items[i]
+            if (!existing) {
+              return { items: s.items }
+            }
+            items[i] = { ...existing, qty: Math.min(99, existing.qty + item.qty) }
+            return { items }
+          }
+          return { items: [...s.items, item] }
+        }),
+      remove: (pid, vid) =>
+        set((s) => ({
+          items: s.items.filter((i) => !(i.productId === pid && i.variantId === vid)),
+        })),
+      setQty: (pid, vid, qty) =>
+        set((s) => ({
+          items: s.items.map((i) =>
+            i.productId === pid && i.variantId === vid ? { ...i, qty } : i
+          ),
+        })),
+      clear: () => set({ items: [] }),
     }),
-  remove: (pid, vid) =>
-    set((s) => ({ items: s.items.filter((i) => !(i.productId === pid && i.variantId === vid)) })),
-  setQty: (pid, vid, qty) =>
-    set((s) => ({
-      items: s.items.map((i) => (i.productId === pid && i.variantId === vid ? { ...i, qty } : i)),
-    })),
-  clear: () => set({ items: [] }),
-}))
+    {
+      name: 'cart-v1',
+      storage: createJSONStorage(() => localStorage),
+      version: 1,
+    }
+  )
+)
