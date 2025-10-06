@@ -1,16 +1,14 @@
-//src/data/products.json
-
 [
   {
     "id": "sb-001",
     "name": "River Shimmer Spinnerbait",
     "description": "Hand-tied skirt, premium hook, balanced wire frame.",
     "category": "spinnerbait",
-    "images": ["/images/placeholder1.jpg"],
+    "images": ["https://placehold.co/900x600?text=Spinnerbait"],
     "variants": [
-      { "id": "v1", "label": "3/8 oz • Chartreuse", "sku": "SB001-38-CH", "stripePriceId": "price_123" }
+      { "id": "v1", "label": "3/8 oz • Chartreuse", "sku": "SB001-38-CH", "stripePriceId": "price_placeholder" }
     ],
-    "tags": ["handmade","bass"],
+    "tags": ["handmade", "bass"],
     "featured": true
   },
   {
@@ -18,21 +16,21 @@
     "name": "Ozark Craw Jig",
     "description": "Silicone skirt, weed guard, stout hook for heavy cover.",
     "category": "jig",
-    "images": ["/images/placeholder2.jpg"],
+    "images": ["https://placehold.co/900x600?text=Jig"],
     "variants": [
-      { "id": "v1", "label": "1/2 oz • Brown/Orange", "sku": "JG010-12-BO", "stripePriceId": "price_456" }
+      { "id": "v1", "label": "1/2 oz • Brown/Orange", "sku": "JG010-12-BO", "stripePriceId": "price_placeholder" }
     ],
-    "tags": ["river","craw"]
+    "tags": ["river", "craw"]
   },
   {
     "id": "tw-100",
     "name": "Dawn Walker Topwater",
     "description": "Walk-the-dog action, welded split rings, sticky trebles.",
     "category": "topwater",
-    "images": ["/images/placeholder3.jpg"],
+    "images": ["https://placehold.co/900x600?text=Topwater"],
     "variants": [
-      { "id": "v1", "label": "3/4 oz • Bone", "sku": "TW100-34-BN", "stripePriceId": "price_789" }
+      { "id": "v1", "label": "3/4 oz • Bone", "sku": "TW100-34-BN", "stripePriceId": "price_placeholder" }
     ],
-    "tags": ["topwater","dawn"]
+    "tags": ["topwater", "dawn"]
   }
 ]

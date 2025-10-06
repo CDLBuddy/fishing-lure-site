@@ -9,9 +9,10 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["vite/client"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src", "api"]
+  "include": ["src"]
 }
