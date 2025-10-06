@@ -1,0 +1,38 @@
+//src/data/products.json
+
+[
+  {
+    "id": "sb-001",
+    "name": "River Shimmer Spinnerbait",
+    "description": "Hand-tied skirt, premium hook, balanced wire frame.",
+    "category": "spinnerbait",
+    "images": ["/images/sb-001-1.jpg"],
+    "variants": [
+      { "id": "v1", "label": "3/8 oz • Chartreuse", "sku": "SB001-38-CH", "stripePriceId": "price_123" }
+    ],
+    "tags": ["handmade","bass"],
+    "featured": true
+  },
+  {
+    "id": "jg-010",
+    "name": "Ozark Craw Jig",
+    "description": "Silicone skirt, weed guard, stout hook for heavy cover.",
+    "category": "jig",
+    "images": ["/images/jg-010-1.jpg"],
+    "variants": [
+      { "id": "v1", "label": "1/2 oz • Brown/Orange", "sku": "JG010-12-BO", "stripePriceId": "price_456" }
+    ],
+    "tags": ["river","craw"]
+  },
+  {
+    "id": "tw-100",
+    "name": "Dawn Walker Topwater",
+    "description": "Walk-the-dog action, welded split rings, sticky trebles.",
+    "category": "topwater",
+    "images": ["/images/tw-100-1.jpg"],
+    "variants": [
+      { "id": "v1", "label": "3/4 oz • Bone", "sku": "TW100-34-BN", "stripePriceId": "price_789" }
+    ],
+    "tags": ["topwater","dawn"]
+  }
+]
