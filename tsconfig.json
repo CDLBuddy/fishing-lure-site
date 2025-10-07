@@ -8,8 +8,8 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "types": ["vite/client"],
+  "jsx": "react-jsx",
+  "types": ["vite/client", "node"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true

@@ -3,7 +3,7 @@ import { useMemo, useEffect } from 'react'
 import { useCart } from '../state/cart'
 import { setTitle } from '../utils/seo'
 
-const CHECKOUT_ENABLED = import.meta.env.VITE_CHECKOUT_ENABLED === 'true'
+const CHECKOUT_ENABLED = import.meta.env.VITE_CHECKOUT_ENABLED === 'false'
 const clamp = (n: number, min = 1, max = 99) =>
   Math.max(min, Math.min(max, Number.isFinite(n) ? n : min))
 
