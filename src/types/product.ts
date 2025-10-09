@@ -4,9 +4,10 @@ import { z } from 'zod'
 
 export const Variant = z.object({
   id: z.string(),
-  label: z.string(),          // "3/8 oz • Chartreuse"
+  label: z.string(),
   sku: z.string(),
-  stripePriceId: z.string(),  // price_xxx (Stripe)
+  stripePriceId: z.string().optional(), // make optional since admin may not use Stripe yet
+  price: z.number().nonnegative().optional() // <-- optional display price (USD)
 })
 
 export const Product = z.object({

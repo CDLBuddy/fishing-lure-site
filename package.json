@@ -4,9 +4,11 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "prebuild": "node scripts/build-catalog.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vite",
+    "preview": "vite preview",
+    "catalog:build": "node scripts/build-catalog.mjs"
   },
   "dependencies": {
     "@stripe/stripe-js": "^2.4.0",
@@ -25,5 +27,8 @@
     "@vitejs/plugin-react": "^4.3.1",
     "typescript": "^5.5.4",
     "vite": "^7.1.9"
+  },
+  "engines": {
+    "node": ">=18.18.0"
   }
 }

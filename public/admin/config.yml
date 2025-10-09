@@ -1,0 +1,47 @@
+backend:
+  name: github
+  repo: YOUR_GH_USER/YOUR_REPO   # <-- change this
+  branch: main                   # <-- change if your default branch differs
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+publish_mode: editorial_workflow
+
+collections:
+  - label: "Products"
+    name: "products"
+    label_singular: "Product"
+    folder: "content/products"
+    create: true
+    slug: "{{id}}"        # keep product JSON filename equal to its id for sanity
+    extension: "json"
+    format: "json"
+    summary: "{{name}} ({{category}})"
+    fields:
+      - { label: "ID (slug)", name: "id", widget: "string", hint: "e.g. sb-001" }
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options: ["spinnerbait","jig","crankbait","topwater","soft-plastic"]
+      - label: "Images"
+        name: "images"
+        widget: "list"
+        field: { label: "Image", name: "src", widget: "image" } # list of objects { src: "/images/uploads/..." }
+      - label: "Variants"
+        name: "variants"
+        widget: "list"
+        summary: "{{fields.label}}"
+        fields:
+          - { label: "Variant ID", name: "id", widget: "string" }
+          - { label: "Label", name: "label", widget: "string", hint: "e.g., 3/8 oz • Chartreuse" }
+          - { label: "SKU", name: "sku", widget: "string" }
+          - { label: "Stripe Price ID", name: "stripePriceId", widget: "string", required: false }
+          - { label: "Price (USD)", name: "price", widget: "number", required: false, min: 0, step: 0.01 }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Status", name: "status", widget: "select", options: ["draft","active","hidden"], default: "active", required: false }
+      - { label: "Sort", name: "sort", widget: "number", required: false }
+      - { label: "Published At", name: "publishedAt", widget: "datetime", required: false }
