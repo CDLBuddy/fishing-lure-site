@@ -1,12 +1,8 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-
-    // Serve Decap CMS UI from the static admin index
     { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/admin/(.*)", "destination": "/admin/index.html" },
-
-    // SPA catch-all (keep this last)
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
