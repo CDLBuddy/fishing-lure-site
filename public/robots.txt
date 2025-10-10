@@ -1,0 +1,11 @@
+# robots.txt for Handmade Lures
+
+User-agent: *
+Allow: /
+
+# Keep CMS and API endpoints out of search
+Disallow: /admin/
+Disallow: /api/
+
+# Point crawlers to your sitemap (update to your custom domain when ready)
+Sitemap: https://fishing-lure-site.vercel.app/sitemap.xml

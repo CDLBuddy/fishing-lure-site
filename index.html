@@ -2,9 +2,39 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
     <title>Handmade Lures</title>
     <meta name="description" content="Custom, hand-made fishing lures." />
+
+    <!-- Favicons / theming -->
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7fafc" media="(prefers-color-scheme: light)" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Handmade Lures" />
+    <meta property="og:description" content="Custom, hand-made fishing lures." />
+    <meta property="og:type" content="website" />
+    <!-- Replace with your live domain when ready -->
+    <meta property="og:image" content="https://YOURDOMAIN.com/icon.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Early theme hydration to avoid flash -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch {}
+      })();
+    </script>
   </head>
   <body style="margin:0; background:#0b1220; color:#e6edf3;">
     <div id="root"></div>

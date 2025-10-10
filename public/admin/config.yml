@@ -1,10 +1,15 @@
 backend:
   name: github
-  repo: YOUR_GH_USER/YOUR_REPO   # <-- change this
-  branch: main                   # <-- change if your default branch differs
+  repo: CDLBuddy/fishing-lure-site     # <-- your repo
+  branch: main
+  base_url: https://fishing-lure-site.vercel.app
+  auth_endpoint: /api/auth
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
+
+# uncomment locally if you want to test CMS against your git without OAuth
+# local_backend: true
 
 publish_mode: editorial_workflow
 
@@ -14,7 +19,7 @@ collections:
     label_singular: "Product"
     folder: "content/products"
     create: true
-    slug: "{{id}}"        # keep product JSON filename equal to its id for sanity
+    slug: "{{id}}"         # keep file name = product id
     extension: "json"
     format: "json"
     summary: "{{name}} ({{category}})"
@@ -29,7 +34,7 @@ collections:
       - label: "Images"
         name: "images"
         widget: "list"
-        field: { label: "Image", name: "src", widget: "image" } # list of objects { src: "/images/uploads/..." }
+        field: { label: "Image", name: "src", widget: "image" }  # results in [{ "src": "/images/uploads/…" }]
       - label: "Variants"
         name: "variants"
         widget: "list"
