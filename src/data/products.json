@@ -4,7 +4,7 @@
     "name": "River Shimmer Spinnerbait",
     "description": "Hand-tied skirt, premium hook, balanced wire frame.",
     "category": "spinnerbait",
-    "images": ["/images/uploads/Ozarkspinnerbait.jpeg"],
+    "images": ["/images/uploads/ozarkspinnerbait.jpeg"],
     "variants": [
       { "id": "v1", "label": "3/8 oz • Chartreuse", "sku": "SB001-38-CH", "stripePriceId": "price_placeholder" }
     ],
