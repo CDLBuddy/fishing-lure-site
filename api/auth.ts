@@ -13,6 +13,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'missing_env' })
   }
 
+  // If OAUTH_SCOPE is set, use it; otherwise default to 'public_repo' (public repos) and fall back to 'repo' if needed.
+  const scope = process.env.OAUTH_SCOPE || 'public_repo'
+
   const state = crypto.randomBytes(16).toString('hex')
   res.setHeader(
     'Set-Cookie',
@@ -22,9 +25,9 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
   const params = new URLSearchParams({
     client_id,
     redirect_uri,
-    scope: 'repo',
+    scope,
     state,
-    allow_signup: 'true'
+    allow_signup: 'true',
   })
 
   res.status(302).setHeader('Location', `https://github.com/login/oauth/authorize?${params}`)

@@ -2,76 +2,93 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Admin</title>
+    <title>Admin • Handmade Lures</title>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Decap CMS -->
+    <!-- Make all relative URLs resolve to /admin/... -->
+    <base href="/admin/">
+
+    <!-- Decap runs in the page; we’ll initialize it manually so we can set a config path -->
+    <script>window.CMS_MANUAL_INIT = true;</script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
+    <!-- Lightweight styles + the "Owner Guide" button -->
     <style>
-      :root { color-scheme: light dark }
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      :root { color-scheme: light dark; }
+      html, body { height:100%; }
+      body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+      .guide-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 9999;
+        background: #0b1220; color: #fff; padding: 10px 14px; border-radius: 10px;
+        text-decoration: none; font-weight: 700; border: 1px solid rgba(255,255,255,0.12);
       }
-      /* Floating Owner Guide button */
-      .owner-guide {
-        position: fixed; top: 10px; right: 10px; z-index: 10000;
-        background: #111827; color: #e5e7eb;
-        border: 1px solid rgba(255,255,255,.12);
-        padding: 8px 10px; border-radius: 8px;
-        font: 600 12px/1.1 ui-sans-serif,system-ui;
-        text-decoration: none;
+      .msg {
+        position: fixed; inset: 0; display: grid; place-items: center; padding: 24px;
+        color: #111; background: #fff;
       }
-      .owner-guide:hover { opacity: .9 }
-      /* noscript box */
-      .noscript {
-        max-width: 720px; margin: 24px auto; padding: 12px 16px;
-        border: 1px solid rgba(0,0,0,.15);
-        background: #fffbe6; color: #111827; border-radius: 8px;
+      @media (prefers-color-scheme: dark) {
+        .msg { color: #e6edf3; background: #0b1220; }
       }
+      .msg .card {
+        max-width: 720px; padding: 20px; border-radius: 12px;
+        border: 1px solid rgba(127,127,127,.25);
+      }
+      .msg h1 { margin: 0 0 8px; font-size: 20px; }
+      .msg p { margin: 6px 0; opacity: .9; }
+      .msg code { padding: 2px 6px; border-radius: 6px; background: rgba(127,127,127,.15); }
     </style>
-
-    <script>
-      // Ensure Decap initializes and preview iframe inherits site styles
-      window.addEventListener('DOMContentLoaded', () => {
-        const boot = () => {
-          if (!window.CMS) return;
-
-          // Explicit init (defensive)
-          try { window.CMS.init(); } catch {}
-
-          // Match site styles in preview pane
-          try {
-            CMS.registerPreviewStyle('/styles/tokens.css');
-            CMS.registerPreviewStyle('/styles/base.css');
-          } catch {}
-        };
-
-        if (window.CMS) boot();
-        else {
-          const i = setInterval(() => {
-            if (window.CMS) { clearInterval(i); boot(); }
-          }, 50);
-          // stop trying after ~10s just in case
-          setTimeout(() => clearInterval(i), 10000);
-        }
-      });
-    </script>
   </head>
   <body>
-    <!-- Owner Guide (opens in new tab) -->
-    <a
-      class="owner-guide"
-      href="/owner-guide.html"
-      target="_blank" rel="noopener nofollow"
-    >Owner Guide ↗</a>
-
+    <a class="guide-btn" href="/owner-guide.html" target="_blank" rel="noopener">Owner Guide ↗</a>
     <noscript>
-      <div class="noscript">
-        <strong>JavaScript is required</strong> to use the admin. Please enable JavaScript and reload this page.
-      </div>
+      <div class="msg"><div class="card">
+        <h1>Enable JavaScript</h1>
+        <p>The admin console needs JavaScript to run.</p>
+      </div></div>
     </noscript>
+
+    <script>
+      (function () {
+        // Friendly error panel
+        const showError = (title, detail) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'msg';
+          wrap.innerHTML = `
+            <div class="card">
+              <h1>${title}</h1>
+              <p>${detail}</p>
+              <p>Check that <code>/admin/config.yml</code> exists and is reachable.</p>
+            </div>`;
+          document.body.appendChild(wrap);
+        };
+
+        // Try to boot Decap when it’s ready
+        const boot = () => {
+          try {
+            // Load config explicitly so it works at /admin (no trailing slash)
+            CMS.init({ load_config_file: true, config_path: 'config.yml' });
+
+            // Optional: style the preview iframe (kept very small on purpose)
+            CMS.registerPreviewStyle('preview.css');
+          } catch (e) {
+            showError('Admin failed to start', e?.message || 'Unknown error');
+          }
+        };
+
+        // Wait for the CMS global to be present, then init
+        let tries = 0;
+        const tick = setInterval(() => {
+          tries++;
+          if (window.CMS && typeof CMS.init === 'function') {
+            clearInterval(tick);
+            boot();
+          } else if (tries > 200) {
+            clearInterval(tick);
+            showError('Admin failed to load', 'The CMS script did not initialize.');
+          }
+        }, 50);
+      })();
+    </script>
   </body>
 </html>
