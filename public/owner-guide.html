@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Owner Guide -- Handmade Lures</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { color-scheme: light dark }
+    body {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 0 16px 48px;
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      color: #111;
+      background: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { color: #e6edf3; background: #0b1220; }
+      a { color: #7cc4ff; }
+      .card { background: #111827; border-color: rgba(255,255,255,.12); }
+      .note { background: #0f172a; border-color: rgba(255,255,255,.12); }
+      code, pre { background: #0f172a; color: #e6edf3; }
+      .kbd { background: #0f172a; color: #e6edf3; border-color: rgba(255,255,255,.2); }
+      .muted { color: #9fb3c8; }
+    }
+    h1, h2, h3 { line-height: 1.25; margin: 1.6rem 0 .6rem }
+    h1 { margin-top: 0 }
+    p { margin: .75rem 0 }
+    a { color: #2363eb; text-decoration: none }
+    a:hover { text-decoration: underline }
+    .muted { color: #555 }
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 16px 18px;
+      background: #fff;
+    }
+    .grid { display: grid; gap: 14px }
+    .kbd {
+      display: inline-block; padding: 2px 6px; border-radius: 6px;
+      border: 1px solid #cbd5e1; background: #f8fafc; font: 12px/1.2 ui-sans-serif, system-ui;
+    }
+    code, pre {
+      background: #f8fafc; border-radius: 8px; padding: 2px 6px;
+    }
+    pre { padding: 10px 12px; overflow: auto }
+    .note {
+      border: 1px solid #e5e7eb; border-left-width: 4px; border-left-color: #53b1f0;
+      border-radius: 8px; padding: 10px 12px; background: #f8fafc;
+    }
+    .list { margin: .5rem 0 .25rem 1.25rem }
+    .list li { margin: .25rem 0 }
+    .top-links {
+      display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px
+    }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 14px; border-radius:8px; font-weight:700;
+      text-decoration:none; background:#53b1f0; color:#0b1220;
+      border:1px solid transparent;
+    }
+    .btn.secondary {
+      background: transparent; color: inherit; border-color: #cbd5e1;
+    }
+    header small { display:block; margin-top:4px }
+    hr { border:0; border-top:1px solid #e5e7eb; margin:24px 0 }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Owner Guide</h1>
+    <small class="muted">
+      Site: <a href="https://fishing-lure-site.vercel.app" target="_blank" rel="noopener">fishing-lure-site.vercel.app</a> ·
+      Admin: <a href="/admin" target="_blank" rel="noopener">/admin</a> ·
+      Repo: <a href="https://github.com/CDLBuddy/fishing-lure-site" target="_blank" rel="noopener">github.com/CDLBuddy/fishing-lure-site</a><br />
+      Last updated: 2025-10-11
+    </small>
+
+    <div class="top-links" style="margin-top:12px">
+      <a class="btn" href="/admin" target="_blank" rel="noopener">Open Admin</a>
+      <a class="btn secondary" href="https://github.com/CDLBuddy/fishing-lure-site/blob/main/owner_guide.md" target="_blank" rel="noopener">View Markdown Version</a>
+    </div>
+  </header>
+
+  <div class="note">
+    This page summarizes how to log in, add/edit products, manage photos, and publish changes. It’s safe for you to bookmark.
+  </div>
+
+  <h2 id="access">1) Access & Sign-in</h2>
+  <ol class="list">
+    <li>Create a GitHub account if you don’t have one: <a href="https://github.com/join" target="_blank" rel="noopener">github.com/join</a>.</li>
+    <li>Send your GitHub username to the maintainer so you can be added as a collaborator.</li>
+    <li>Visit <strong><a href="/admin" target="_blank" rel="noopener">/admin</a></strong>.</li>
+    <li>Click <em>Login with GitHub</em> and approve the popup. If it’s blocked, allow popups and try again.</li>
+  </ol>
+  <p class="muted">Your edits are saved to the website’s repository and automatically deployed.</p>
+
+  <h2 id="products">2) Products: Add / Edit / Publish</h2>
+  <h3>Add a product</h3>
+  <ol class="list">
+    <li>Click <em>New Products</em>.</li>
+    <li>Fill fields:
+      <ul class="list">
+        <li><strong>ID (slug)</strong> -- short lowercase id (e.g. <code>sb-001</code>). <em>Don’t change later</em>; it becomes the URL.</li>
+        <li><strong>Name</strong> and <strong>Description</strong></li>
+        <li><strong>Category</strong> -- spinnerbait / jig / crankbait / topwater / soft-plastic</li>
+        <li><strong>Images</strong> -- add at least one. See <a href="#images">image tips</a>.</li>
+        <li><strong>Variants</strong> -- for sizes/colors/weights:
+          <ul class="list">
+            <li><strong>Variant ID</strong> (e.g. <code>v1</code>)</li>
+            <li><strong>Label</strong> (e.g. <code>3/8 oz • Chartreuse</code>)</li>
+            <li><strong>SKU</strong> (your internal code)</li>
+            <li><strong>Stripe Price ID</strong> -- leave blank until checkout is enabled</li>
+            <li><strong>Price (USD)</strong> -- optional display price for now</li>
+          </ul>
+        </li>
+        <li>(Optional) <strong>Tags</strong>, <strong>Featured</strong>, <strong>Sort</strong>, <strong>Published At</strong></li>
+      </ul>
+    </li>
+    <li>Click <strong>Save</strong>, then <strong>Publish</strong>.</li>
+  </ol>
+
+  <h3>Edit a product</h3>
+  <ol class="list">
+    <li>Open the product from the list.</li>
+    <li>Make changes → <strong>Save</strong> → <strong>Publish</strong>.</li>
+  </ol>
+
+  <h3>Remove or hide a product</h3>
+  <ul class="list">
+    <li>Set <strong>Status</strong> to <em>Draft</em> (not public) or <em>Hidden</em> (not listed), then <strong>Publish</strong>.</li>
+    <li>To retire an item permanently, switch to <em>Hidden</em> and coordinate full removal with the maintainer.</li>
+  </ul>
+
+  <h2 id="images">3) Images: Quality, Size, Filenames</h2>
+  <ul class="list">
+    <li><strong>Shape</strong>: Landscape <strong>3:2</strong> (our product cards expect this).</li>
+    <li><strong>Size</strong>: ~<strong>1200–1600px</strong> wide.</li>
+    <li><strong>Format</strong>: <strong>JPG/JPEG</strong> at quality ~80–85.</li>
+    <li><strong>Filenames</strong>: Lowercase, hyphens, no spaces (<code>river-shimmer.jpg</code>). Case matters on hosting.</li>
+  </ul>
+  <p class="muted">If a new image doesn’t appear right away, hard-refresh. For instant change, upload with a new filename.</p>
+
+  <h2 id="statuses">4) Statuses: Draft vs Active vs Hidden</h2>
+  <ul class="list">
+    <li><strong>Draft</strong> -- Not live. Safe to work in.</li>
+    <li><strong>Active</strong> -- Live on the site (catalog/product pages/sitemap).</li>
+    <li><strong>Hidden</strong> -- Not listed; kept out of sitemap.</li>
+  </ul>
+
+  <h2 id="variants">5) Variants (sizes, colors, weights)</h2>
+  <p>Use variants for different sizes, colors, weights, or hooks of the same lure.</p>
+  <ul class="list">
+    <li>Give each variant a stable <strong>Variant ID</strong> (<code>v1</code>, <code>v2</code>).</li>
+    <li><strong>Label</strong> is what shoppers see (e.g. <code>1/2 oz • Brown/Orange</code>).</li>
+    <li><strong>SKU</strong> is your internal code.</li>
+    <li><strong>Stripe Price ID</strong> stays blank until checkout is enabled.</li>
+  </ul>
+
+  <h2 id="featured">6) Featured Products</h2>
+  <p>Toggle <em>Featured</em> to highlight items on the homepage/featured sections (if configured). Use sparingly.</p>
+
+  <h2 id="checkout">7) Cart & Checkout (Stripe)</h2>
+  <ul class="list">
+    <li>The site supports a shopping cart now.</li>
+    <li><strong>Checkout is currently disabled</strong> until Stripe is connected.</li>
+    <li>When ready:
+      <ul class="list">
+        <li>Configure products/prices in Stripe.</li>
+        <li>Paste Stripe <code>price_...</code> IDs into each variant.</li>
+        <li>We’ll enable checkout and test in Stripe’s Test Mode.</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2 id="deploy">8) What Happens When You Publish</h2>
+  <ol class="list">
+    <li>The admin saves your edits to the repository.</li>
+    <li>The hosting platform rebuilds and deploys automatically.</li>
+    <li>When the deploy finishes, refresh the site to see changes.</li>
+  </ol>
+  <p class="muted">If you don’t see the change immediately, give it a moment and refresh again.</p>
+
+  <h2 id="troubleshooting">9) Troubleshooting</h2>
+  <div class="grid">
+    <div class="card">
+      <strong>Login loop or "Authorization failed"</strong>
+      <ul class="list">
+        <li>Allow popups for the site.</li>
+        <li>Verify you’re logged into the invited GitHub account.</li>
+        <li>Try a private/incognito window.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <strong>Change not visible</strong>
+      <ul class="list">
+        <li>Did you click <em>Publish</em> (not only Save)?</li>
+        <li>Wait for the deploy to finish; refresh the page.</li>
+        <li>Confirm Status is <em>Active</em>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <strong>Image not updating</strong>
+      <ul class="list">
+        <li>Hard refresh the page.</li>
+        <li>Upload with a new filename for instant change.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <strong>"Not found" after renaming</strong>
+      <ul class="list">
+        <li>Don’t change the product <em>ID (slug)</em> after publishing.</li>
+        <li>If it must change, coordinate a redirect with the maintainer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 id="faq">10) FAQ</h2>
+  <p><strong>Can I create new categories?</strong><br />
+  Yes, but keep to the approved list for now: spinnerbait, jig, crankbait, topwater, soft-plastic. More can be added by the maintainer.</p>
+
+  <p><strong>Can I reorder products?</strong><br />
+  Yes--use the <em>Sort</em> field (lower numbers appear first). If you don’t see changes, ask the maintainer to enable sorting on the catalog.</p>
+
+  <p><strong>Can I upload PNG or HEIC?</strong><br />
+  JPG is recommended for best size/quality. Convert HEIC to JPG before upload.</p>
+
+  <p><strong>Can I run sales or discounts?</strong><br />
+  Once Stripe is live, we can use sale prices or coupon codes and reflect that on the site.</p>
+
+  <h2 id="support">11) Support</h2>
+  <p>
+    <strong>Maintainer:</strong> CDLBuddy<br />
+    <strong>Contact:</strong> Open an issue in the repo:
+    <a href="https://github.com/CDLBuddy/fishing-lure-site/issues" target="_blank" rel="noopener">github.com/CDLBuddy/fishing-lure-site/issues</a>
+  </p>
+
+  <hr />
+
+  <h3>Cheat Sheet</h3>
+  <ul class="list">
+    <li><strong>Login:</strong> /admin → Login with GitHub → Products</li>
+    <li><strong>Add:</strong> New → fill fields → Save → <strong>Publish</strong></li>
+    <li><strong>Edit:</strong> Open → change → Save → <strong>Publish</strong></li>
+    <li><strong>Status:</strong> Draft (not live) / Active (live) / Hidden (not listed)</li>
+    <li><strong>Photos:</strong> JPG, ~3:2, ~1600px, lowercase-hyphen filenames</li>
+    <li><strong>Variants:</strong> Each needs ID + Label + SKU</li>
+    <li><strong>Checkout:</strong> Disabled until Stripe is connected</li>
+  </ul>
+</body>
+</html>

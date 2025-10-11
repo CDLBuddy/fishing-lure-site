@@ -5,31 +5,73 @@
     <title>Admin</title>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <!-- Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
     <style>
-      /* keep CMS UI readable even if tokens fail to load */
       :root { color-scheme: light dark }
-      body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      }
+      /* Floating Owner Guide button */
+      .owner-guide {
+        position: fixed; top: 10px; right: 10px; z-index: 10000;
+        background: #111827; color: #e5e7eb;
+        border: 1px solid rgba(255,255,255,.12);
+        padding: 8px 10px; border-radius: 8px;
+        font: 600 12px/1.1 ui-sans-serif,system-ui;
+        text-decoration: none;
+      }
+      .owner-guide:hover { opacity: .9 }
+      /* noscript box */
+      .noscript {
+        max-width: 720px; margin: 24px auto; padding: 12px 16px;
+        border: 1px solid rgba(0,0,0,.15);
+        background: #fffbe6; color: #111827; border-radius: 8px;
+      }
     </style>
+
     <script>
-      // When the CMS bootstraps, style the preview iframe so it looks like your site.
+      // Ensure Decap initializes and preview iframe inherits site styles
       window.addEventListener('DOMContentLoaded', () => {
-        // In case the script loads before Decap attaches CMS global
-        const onReady = () => {
+        const boot = () => {
           if (!window.CMS) return;
-          // These files live in your app and will be fetched into the preview iframe.
-          CMS.registerPreviewStyle('/styles/tokens.css');
-          CMS.registerPreviewStyle('/styles/base.css');
+
+          // Explicit init (defensive)
+          try { window.CMS.init(); } catch {}
+
+          // Match site styles in preview pane
+          try {
+            CMS.registerPreviewStyle('/styles/tokens.css');
+            CMS.registerPreviewStyle('/styles/base.css');
+          } catch {}
         };
-        if (window.CMS) onReady();
+
+        if (window.CMS) boot();
         else {
           const i = setInterval(() => {
-            if (window.CMS) { clearInterval(i); onReady(); }
+            if (window.CMS) { clearInterval(i); boot(); }
           }, 50);
+          // stop trying after ~10s just in case
+          setTimeout(() => clearInterval(i), 10000);
         }
       });
     </script>
   </head>
-  <body></body>
+  <body>
+    <!-- Owner Guide (opens in new tab) -->
+    <a
+      class="owner-guide"
+      href="/owner-guide.html"
+      target="_blank" rel="noopener nofollow"
+    >Owner Guide ↗</a>
+
+    <noscript>
+      <div class="noscript">
+        <strong>JavaScript is required</strong> to use the admin. Please enable JavaScript and reload this page.
+      </div>
+    </noscript>
+  </body>
 </html>

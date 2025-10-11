@@ -53,6 +53,11 @@ VITE_CHECKOUT_ENABLED=false
 - ⏳ Toast notifications for cart actions
 - ⏳ Stripe Checkout enablement once keys are configured
 
+ ## Owner Guide
+Owners: use the admin at https://fishing-lure-site.vercel.app/admin
+
+Full instructions: [owner_guide.md](./owner_guide.md)
+
 ## 📄 License
 
 Proprietary. All rights reserved unless explicit permission is granted.
