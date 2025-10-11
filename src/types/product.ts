@@ -19,6 +19,9 @@ export const Product = z.object({
   variants: z.array(Variant).min(1),
   tags: z.array(z.string()).optional(),
   featured: z.boolean().optional(),
+  status: z.enum(['draft', 'active', 'hidden']).optional(),
+  sort: z.number().optional(),
+  publishedAt: z.string().optional(),
 })
 
 export type Product = z.infer<typeof Product>

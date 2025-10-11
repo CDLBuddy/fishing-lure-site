@@ -45,13 +45,12 @@ export default function ProductCard({ p }: { p: Product }) {
           </span>
         )}
 
-        <div style={{ aspectRatio: '3 / 2', background: '#1f2937' }}>
+        <div className="img-frame">
           <img
             src={img}
             alt={p.name}
             loading="lazy"
             decoding="async"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>
 
