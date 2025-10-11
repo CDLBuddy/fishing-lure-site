@@ -1,7 +1,7 @@
 // src/utils/seo.ts
 
 type JsonLd = Record<string, unknown> | Array<Record<string, unknown>>
-const SITE_NAME = 'Handmade Lures'
+const SITE_NAME = 'RIP Custom Lures'
 
 const D = () => (typeof document !== 'undefined' ? document : null)
 

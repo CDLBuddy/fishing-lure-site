@@ -1,6 +1,6 @@
-# Handmade Lures (Vite + React + TypeScript)
+# RIP Custom Lures (Vite + React + TypeScript)
 
-Handmade Lures is a fast static storefront for showcasing a curated fishing lure catalog. The app is built with Vite, React, and TypeScript, serves a static JSON product catalog, and keeps all cart logic on the client. Stripe Checkout is optional and currently disabled.
+RIP Custom Lures is a fast static storefront for showcasing a curated fishing lure catalog. The app is built with Vite, React, and TypeScript, serves a static JSON product catalog, and keeps all cart logic on the client. Stripe Checkout is optional and currently disabled.
 
 ## 🎯 Goals
 

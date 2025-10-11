@@ -1,4 +1,4 @@
-# Handmade Lures — Owner Guide
+# RIP Custom Lures — Owner Guide
 
 > **Site URL:** https://fishing-lure-site.vercel.app  
 > **Admin URL:** https://fishing-lure-site.vercel.app/admin  

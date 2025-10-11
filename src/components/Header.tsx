@@ -62,10 +62,8 @@ export default function Header() {
         <Link
           to="/"
           style={{ color: 'var(--text)', textDecoration: 'none', fontWeight: 800, fontSize: 18 }}
-          aria-label="Handmade Lures – home"
-        >
-          Handmade Lures
-        </Link>
+          aria-label="RIP Custom Lures – home"
+        > <img src="/images/logo-rip.png" alt="RIP Custom Lures" style={{ height: 32 }} /></Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <nav aria-label="Main" style={{ display: 'flex', alignItems: 'center' }}>
