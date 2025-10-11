@@ -67,6 +67,7 @@ async function main() {
     // Static routes
     { loc: `${site}/`, changefreq: 'weekly', priority: '0.8' },
     { loc: `${site}/catalog`, changefreq: 'weekly', priority: '0.7' },
+    { loc: `${site}/gallery`, changefreq: 'weekly', priority: '0.6' },
     { loc: `${site}/about`, changefreq: 'yearly', priority: '0.3' },
 
     // Product detail pages

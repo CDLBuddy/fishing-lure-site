@@ -20,6 +20,7 @@ export default function Header() {
 
         <nav className="main-nav">
           {nav('/catalog', 'Catalog')}
+          {nav('/gallery', 'Gallery')}
           {nav('/about', 'About')}
           {nav('/cart', count ? `Cart · ${count}` : 'Cart')}
         </nav>

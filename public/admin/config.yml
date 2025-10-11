@@ -14,6 +14,45 @@ public_folder: "/images/uploads"
 publish_mode: editorial_workflow
 
 collections:
+
+  - label: "Catches"
+    name: "catches"
+    label_singular: "Catch"
+    folder: "content/catches"
+    create: true
+    slug: "{{id}}"
+    extension: "json"
+    format: "json"
+    summary: "{{title}} ({{angler}})"
+    fields:
+      - { label: "ID (slug)", name: "id", widget: "string", hint: "e.g. catch-2025-10-11-dan-bass" }
+      - { label: "Title / Caption", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", required: false }
+      - { label: "Angler", name: "angler", widget: "string", required: false }
+      - label: "Lure"
+        name: "lureId"
+        widget: "relation"
+        collection: "products"
+        search_fields: ["name","id"]
+        value_field: "id"
+        display_fields: ["name","id"]
+        required: false
+      - { label: "Location", name: "location", widget: "string", required: false }
+      - { label: "Species", name: "species", widget: "string", required: false }
+      - { label: "Length (in)", name: "lengthIn", widget: "number", required: false, min: 0, step: 0.1 }
+      - { label: "Weight (lb)", name: "weightLb", widget: "number", required: false, min: 0, step: 0.1 }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - label: "Images"
+        name: "images"
+        widget: "list"
+        fields:
+          - { label: "Image", name: "src", widget: "image" }
+          - { label: "Alt", name: "alt", widget: "string", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "Status", name: "status", widget: "select", options: ["draft","published"], default: "published" }
+      - { label: "Sort", name: "sort", widget: "number", required: false }
+      - { label: "Published At", name: "publishedAt", widget: "datetime", required: false }
+
   - label: "Products"
     name: "products"
     label_singular: "Product"

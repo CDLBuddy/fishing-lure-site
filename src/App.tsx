@@ -25,7 +25,8 @@ export default function App() {
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+          <Route path="gallery" element={<Gallery />} />
+</Routes>
         <Footer />
       </ToastProvider>
     </BrowserRouter>
