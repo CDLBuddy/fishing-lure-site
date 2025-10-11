@@ -92,3 +92,97 @@ a[href="#main"]:focus {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important }
 }
+
+/* POLISH: header/nav styles */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: saturate(140%) blur(8px);
+  background: color-mix(in oklab, var(--bg), transparent 15%);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+}
+.brand img { height: 34px; width: auto; display: block; }
+.main-nav { display: flex; gap: 6px 14px; align-items: center; }
+.nav-link {
+  position: relative;
+  padding: 10px 2px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .18s ease;
+}
+.nav-link:hover { color: var(--text); }
+.nav-link::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 4px;
+  height: 2px; transform: scaleX(0); transform-origin: left;
+  background: var(--brand);
+  transition: transform .18s ease;
+  border-radius: 2px;
+}
+.nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+
+
+
+/* POLISH: buttons/cards/badges/hero/img-frame */
+
+/* Subtle motion + focus polish */
+.btn {
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, opacity .15s ease;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+.btn:hover:not([disabled]) { transform: translateY(-1px); }
+.btn:active:not([disabled]) { transform: translateY(0); }
+.btn-ghost {
+  background: var(--bg-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Card lift */
+.card {
+  transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(0,0,0,.25);
+  border-color: color-mix(in oklab, var(--brand), transparent 84%);
+}
+
+/* Badge pill */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 8px; border-radius: 999px;
+  background: color-mix(in oklab, var(--brand), transparent 85%);
+  color: var(--brand); font-weight: 700; font-size: 12px;
+  border: 1px solid color-mix(in oklab, var(--brand), transparent 60%);
+}
+
+/* Consistent product image framing */
+.img-frame {
+  position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+  border-radius: 12px; background: #e5e7eb1a; border: 1px solid var(--border);
+}
+.img-frame > img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Fluid headings & hero utility */
+h1, .h1 { font-size: clamp(28px, 4.2vw, 44px); line-height: 1.1; letter-spacing: -0.01em; }
+h2, .h2 { font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; letter-spacing: -0.005em; }
+.lead { font-size: clamp(16px, 2.2vw, 18px); color: var(--text-dim); }
+.hero {
+  padding: 28px var(--space-3) 14px;
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(800px 240px at 0% -10%, color-mix(in oklab, var(--brand), transparent 92%), transparent 60%),
+    var(--bg);
+}
+

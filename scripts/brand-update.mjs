@@ -66,8 +66,8 @@ async function copyLogoIfProvided() {
 async function findExistingLogoPublicPath() {
   try {
     const files = await fs.readdir(IMG_DIR)
-    const found = files.find((f) =>
-      exts.includes(path.extname(f).toLowerCase()) && f.startsWith(`${LOGO_BASENAME}`)
+    const found = files.find(
+      (f) => exts.includes(path.extname(f).toLowerCase()) && f.startsWith(`${LOGO_BASENAME}`)
     )
     return found ? `/images/${found}` : null
   } catch {
@@ -76,7 +76,11 @@ async function findExistingLogoPublicPath() {
 }
 
 async function read(file) {
-  try { return await fs.readFile(file, 'utf-8') } catch { return null }
+  try {
+    return await fs.readFile(file, 'utf-8')
+  } catch {
+    return null
+  }
 }
 
 async function write(file, content) {
@@ -104,7 +108,9 @@ async function main() {
   if (!logoPublicPath) logoPublicPath = await findExistingLogoPublicPath()
   if (!logoPublicPath) {
     logoPublicPath = '/images/logo-rip.png'
-    console.warn(`⚠️ No logo found. Referencing ${logoPublicPath}. Place your file at public${logoPublicPath}.`)
+    console.warn(
+      `⚠️ No logo found. Referencing ${logoPublicPath}. Place your file at public${logoPublicPath}.`
+    )
   }
 
   // 1) Header.tsx — swap brand text with <img> (keeps link + styles)
@@ -149,10 +155,7 @@ async function main() {
         `<link rel="icon" href="${logoPublicPath}">`
       )
     } else {
-      out = out.replace(
-        /<\/head>/i,
-        `  <link rel="icon" href="${logoPublicPath}">\n</head>`
-      )
+      out = out.replace(/<\/head>/i, `  <link rel="icon" href="${logoPublicPath}">\n</head>`)
     }
 
     // any plain text references
