@@ -5,11 +5,27 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 function popup(res: VercelResponse, kind: 'success' | 'error', payload: unknown) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8')
-  const channel = `authorization:github:${kind}:` + JSON.stringify(payload)
-  res.status(200).send(`<!doctype html><html><body><script>
-    try {
-      window.opener && window.opener.postMessage(${JSON.stringify(channel)}, '*');
-    } finally { window.close(); }
+  const messageString = `authorization:github:${kind}:${JSON.stringify(payload)}`
+  res.status(200).send(`<!doctype html><html><head><title>OAuth Callback</title></head><body>
+  <p>Authorization ${kind}. This window should close automatically...</p>
+  <script>
+    (function() {
+      try {
+        var message = ${JSON.stringify(messageString)};
+        console.log('Sending message:', message);
+        if (window.opener) {
+          window.opener.postMessage(message, '*');
+          console.log('Message sent to opener');
+        } else {
+          console.error('No window.opener found');
+        }
+      } catch(e) {
+        console.error('Error sending message:', e);
+      }
+      setTimeout(function() {
+        window.close();
+      }, 1000);
+    })();
   </script></body></html>`)
 }
 

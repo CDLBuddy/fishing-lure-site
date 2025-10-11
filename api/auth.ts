@@ -13,8 +13,8 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'missing_env' })
   }
 
-  // If OAUTH_SCOPE is set, use it; otherwise default to 'public_repo' (public repos) and fall back to 'repo' if needed.
-  const scope = process.env.OAUTH_SCOPE || 'public_repo'
+  // If OAUTH_SCOPE is set, use it; otherwise default to 'repo' for private repo access
+  const scope = process.env.OAUTH_SCOPE || 'repo'
 
   const state = crypto.randomBytes(16).toString('hex')
   res.setHeader(
