@@ -5,26 +5,38 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 function popup(res: VercelResponse, kind: 'success' | 'error', payload: unknown) {
   res.setHeader('Content-Type', 'text/html; charset=utf-8')
-  const messageString = `authorization:github:${kind}:${JSON.stringify(payload)}`
+  const authMessage = 'authorizing:github'
+  const resultMessage = `authorization:github:${kind}:${JSON.stringify(payload)}`
   res.status(200).send(`<!doctype html><html><head><title>OAuth Callback</title></head><body>
   <p>Authorization ${kind}. This window should close automatically...</p>
   <script>
     (function() {
       try {
-        var message = ${JSON.stringify(messageString)};
-        console.log('Sending message:', message);
-        if (window.opener) {
-          window.opener.postMessage(message, '*');
-          console.log('Message sent to opener');
-        } else {
+        if (!window.opener) {
           console.error('No window.opener found');
+          document.body.innerHTML = '<p>Error: This window must be opened from the CMS.</p>';
+          return;
         }
+        
+        // Step 1: Send handshake message
+        var handshake = ${JSON.stringify(authMessage)};
+        console.log('Sending handshake:', handshake);
+        window.opener.postMessage(handshake, window.origin);
+        
+        // Step 2: Wait for handshake response, then send result
+        window.addEventListener('message', function(e) {
+          if (e.data === handshake && e.origin === window.origin) {
+            console.log('Handshake confirmed, sending result');
+            var result = ${JSON.stringify(resultMessage)};
+            console.log('Sending result:', result);
+            window.opener.postMessage(result, e.origin);
+            setTimeout(function() { window.close(); }, 1000);
+          }
+        }, false);
+        
       } catch(e) {
-        console.error('Error sending message:', e);
+        console.error('Error in OAuth callback:', e);
       }
-      setTimeout(function() {
-        window.close();
-      }, 1000);
     })();
   </script></body></html>`)
 }
