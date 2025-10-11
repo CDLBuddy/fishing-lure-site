@@ -11,17 +11,17 @@ This guide shows you how to log in to the admin, add/edit products, manage custo
 
 ## Contents
 
-1. [Access & Sign-in](#access--sign-in)  
-2. [Products: Add / Edit / Publish](#products-add--edit--publish)  
-3. [Gallery: Customer Catches](#gallery-customer-catches)  
-4. [Images: Quality, Size, Filenames](#images-quality-size-filenames)  
-5. [Statuses: Draft vs Published](#statuses-draft-vs-published)  
-6. [Variants (sizes, colors, weights)](#variants-sizes-colors-weights)  
-7. [Featured Items](#featured-items)  
-8. [Cart & Checkout (Stripe)](#cart--checkout-stripe)  
-9. [What Happens When You Publish](#what-happens-when-you-publish)  
-10. [Troubleshooting](#troubleshooting)  
-11. [FAQ](#faq)  
+1. [Access & Sign-in](#access--sign-in)
+2. [Products: Add / Edit / Publish](#products-add--edit--publish)
+3. [Gallery: Customer Catches](#gallery-customer-catches)
+4. [Images: Quality, Size, Filenames](#images-quality-size-filenames)
+5. [Statuses: Draft vs Published](#statuses-draft-vs-published)
+6. [Variants (sizes, colors, weights)](#variants-sizes-colors-weights)
+7. [Featured Items](#featured-items)
+8. [Cart & Checkout (Stripe)](#cart--checkout-stripe)
+9. [What Happens When You Publish](#what-happens-when-you-publish)
+10. [Troubleshooting](#troubleshooting)
+11. [FAQ](#faq)
 12. [Support](#support)
 
 ---
@@ -31,7 +31,7 @@ This guide shows you how to log in to the admin, add/edit products, manage custo
 1. You’ll need a **GitHub account**. If you don’t have one, create it at https://github.com/join.
 2. Send your **GitHub username** to the site maintainer (see [Support](#support)) so you can be added as a collaborator.
 3. Visit **Admin**: `https://fishing-lure-site.vercel.app/admin`.
-4. Click **Login with GitHub** and approve the authorization popup.  
+4. Click **Login with GitHub** and approve the authorization popup.
    - If the popup is blocked, allow popups for the site and try again.
 
 > Your admin changes are saved to the Git repository, which automatically redeploys the site.
@@ -43,6 +43,7 @@ This guide shows you how to log in to the admin, add/edit products, manage custo
 **Where:** Admin → **Products**
 
 ### Add a product
+
 1. Click **New Products**.
 2. Fill out the fields:
    - **ID (slug)**: short, lowercase id (e.g. `sb-001`).  
@@ -60,11 +61,13 @@ This guide shows you how to log in to the admin, add/edit products, manage custo
 3. Click **Save**, then **Publish**.
 
 ### Edit a product
+
 1. Open a product from the list.
 2. Make changes and **Save**.
 3. Click **Publish** to push it live.
 
 ### Remove a product
+
 - Change **Status** to **Hidden** (not listed) or **Draft** (not public), then **Publish** the change.
 - If you need it fully gone from the site, set **Hidden**, publish, then coordinate with the maintainer to remove the file entirely.
 
@@ -77,6 +80,7 @@ This guide shows you how to log in to the admin, add/edit products, manage custo
 The Gallery showcases real catches from real anglers using your lures. This builds trust and excitement!
 
 ### Add a catch photo
+
 1. Click **New Catch**.
 2. Fill out the fields:
    - **ID (slug)**: unique id (e.g. `catch-2025-10-11-dan-bass`).  
@@ -97,12 +101,14 @@ The Gallery showcases real catches from real anglers using your lures. This buil
 3. Click **Save**, then **Publish**.
 
 ### Gallery features
+
 - **Filters**: Visitors can filter by category, specific lure, or search
 - **Lightbox**: Click any photo to view full-size with keyboard navigation (←/→/Esc)
 - **Product links**: Catches automatically link to the lure that was used
 - **Pagination**: Loads 24 catches at a time for fast performance
 
 ### Tips for great gallery entries
+
 - Use high-quality photos showing the fish and lure together when possible
 - Fill in measurements to build credibility
 - Link to the specific lure product for easy shopping
@@ -113,7 +119,7 @@ The Gallery showcases real catches from real anglers using your lures. This buil
 
 ## Images: Quality, Size, Filenames
 
-- **Shape**: Landscape **3:2** (cards expect this shape).  
+- **Shape**: Landscape **3:2** (cards expect this shape).
 - **Size**: ~**1200–1600 px** wide is ideal.
 - **Format**: **JPG/JPEG** at quality ~80–85.
 - **Filenames**: Lowercase, hyphens, no spaces (e.g. `river-shimmer.jpg`).  
@@ -126,11 +132,13 @@ The Gallery showcases real catches from real anglers using your lures. This buil
 ## Statuses: Draft vs Published
 
 **For Products:**
+
 - **Draft**: Not live. Safe place to work before publishing.
 - **Active**: Live on the site (shows in catalog, product page, sitemap).
 - **Hidden**: Not listed publicly; kept out of the sitemap.
 
 **For Catches (Gallery):**
+
 - **Draft**: Not visible in gallery. Use while editing.
 - **Published**: Live in the gallery for visitors to see.
 
@@ -182,35 +190,41 @@ Use sparingly so the best items stand out.
 
 ## Troubleshooting
 
-- **Admin login loop or “Authorization failed”**  
-  - Ensure popups are allowed.  
-  - Verify you’re logged into the **GitHub account** that was invited.  
+- **Admin login loop or “Authorization failed”**
+
+  - Ensure popups are allowed.
+  - Verify you’re logged into the **GitHub account** that was invited.
   - If needed, try a private/incognito window.
 
-- **I changed a product but don't see it on the site**  
-  - Did you click **Publish** (not just Save)?  
-  - Wait for the site to redeploy, then refresh.  
+- **I changed a product but don't see it on the site**
+
+  - Did you click **Publish** (not just Save)?
+  - Wait for the site to redeploy, then refresh.
   - If still missing, confirm the product **Status** is **Active**.
 
-- **Gallery catch isn't showing**  
+- **Gallery catch isn't showing**
+
   - Verify **Status** is **Published** (not Draft).
   - Click **Publish** to save and deploy changes.
   - Wait for rebuild, then refresh the gallery page.
 
-- **Photo isn't updating**  
-  - Try a hard refresh (Ctrl+F5 or Cmd+Shift+R).  
+- **Photo isn't updating**
+
+  - Try a hard refresh (Ctrl+F5 or Cmd+Shift+R).
   - For instant change, upload with a **new filename**.
 
-- **Can't select a lure when adding a catch**  
+- **Can't select a lure when adding a catch**
+
   - Make sure products exist and are **Active**.
   - The relation widget searches by product name and ID.
   - If you just added a product, publish it first.
 
-- **Broken link / “Not found”**  
-  - Don’t change the **ID (slug)** of products that are already public.  
+- **Broken link / “Not found”**
+
+  - Don’t change the **ID (slug)** of products that are already public.
   - If a slug must change, coordinate a redirect with the maintainer.
 
-- **Variants disappeared**  
+- **Variants disappeared**
   - Ensure each variant has **Variant ID**, **Label**, and **SKU** filled in.
 
 ---
@@ -231,6 +245,7 @@ Yes, once Stripe is live we can add sale prices or coupon codes through Stripe a
 
 **Should I add every catch to the gallery?**  
 Focus on quality over quantity! Add catches that:
+
 - Show the lure and fish clearly
 - Have good lighting and composition
 - Represent different species, locations, or lure types
@@ -238,6 +253,7 @@ Focus on quality over quantity! Add catches that:
 
 **Can customers submit their own catch photos?**  
 Not automatically yet, but you can:
+
 - Create a form or email where customers send photos
 - Add them manually to the admin with credit to the angler
 - Or coordinate with the maintainer to add a submission feature
@@ -249,8 +265,8 @@ You can upload multiple photos for each catch. They'll appear in the lightbox vi
 
 ## Support
 
-- **Maintainer:** CDLBuddy  
-- **Contact:** Open an issue in the repo: https://github.com/CDLBuddy/fishing-lure-site/issues  
+- **Maintainer:** CDLBuddy
+- **Contact:** Open an issue in the repo: https://github.com/CDLBuddy/fishing-lure-site/issues
 - **Backup Contact:** _optional_
 
 > If you’re ever stuck, include a brief description of what you tried and a screenshot of the admin page. That speeds up fixes.
@@ -260,14 +276,16 @@ You can upload multiple photos for each catch. They'll appear in the lightbox vi
 ### One-page Cheat Sheet
 
 **Products:**
-- **Login:** `/admin` → Login with GitHub → Products  
-- **Add:** New → fill fields → Save → **Publish**  
-- **Edit:** Open item → change → Save → **Publish**  
-- **Status:** Draft (not live) / Active (live) / Hidden (not listed)  
-- **Photos:** JPG, ~3:2, ~1600px, lowercase-hyphen filenames  
-- **Variants:** Each needs ID + Label + SKU  
+
+- **Login:** `/admin` → Login with GitHub → Products
+- **Add:** New → fill fields → Save → **Publish**
+- **Edit:** Open item → change → Save → **Publish**
+- **Status:** Draft (not live) / Active (live) / Hidden (not listed)
+- **Photos:** JPG, ~3:2, ~1600px, lowercase-hyphen filenames
+- **Variants:** Each needs ID + Label + SKU
 
 **Gallery (Catches):**
+
 - **Login:** `/admin` → Login with GitHub → Catches
 - **Add:** New Catch → fill fields (ID, title, angler, lure, images) → Save → **Publish**
 - **Status:** Draft (not visible) / Published (live in gallery)
@@ -276,5 +294,6 @@ You can upload multiple photos for each catch. They'll appear in the lightbox vi
 - **Featured:** Toggle on for your best catches
 
 **General:**
+
 - **Checkout:** Disabled until Stripe is connected
 - **Publish workflow:** Save changes → Publish → Wait for rebuild → Refresh site
