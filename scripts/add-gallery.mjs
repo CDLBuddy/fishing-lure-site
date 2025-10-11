@@ -10,39 +10,49 @@
 // Commit after running:
 //   git add -A && git commit -m "Add Gallery page with CMS + build pipeline"
 
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const root = path.resolve(__dirname, '..')
 
 async function exists(p) {
-  try { await fs.access(p); return true; } catch { return false; }
+  try {
+    await fs.access(p)
+    return true
+  } catch {
+    return false
+  }
 }
 async function read(p, fallback = null) {
-  try { return await fs.readFile(p, "utf8"); } catch { return fallback; }
+  try {
+    return await fs.readFile(p, 'utf8')
+  } catch {
+    return fallback
+  }
 }
 async function write(p, text) {
-  await fs.mkdir(path.dirname(p), { recursive: true });
-  await fs.writeFile(p, text);
-  console.log("✓ wrote", path.relative(root, p));
+  await fs.mkdir(path.dirname(p), { recursive: true })
+  await fs.writeFile(p, text)
+  console.log('✓ wrote', path.relative(root, p))
 }
 function insertOnce(hay, needle, block) {
-  return hay.includes(needle) ? hay : hay + (hay.endsWith("\n") ? "" : "\n") + block + "\n";
+  return hay.includes(needle) ? hay : hay + (hay.endsWith('\n') ? '' : '\n') + block + '\n'
 }
 function replaceOnce(hay, regex, replacement) {
-  if (!regex.test(hay)) return hay;
-  return hay.replace(regex, replacement);
+  if (!regex.test(hay)) return hay
+  return hay.replace(regex, replacement)
 }
 function ensureJsonArray(p) {
-  return fs.mkdir(path.dirname(p), { recursive: true })
-    .then(() => fs.writeFile(p, "[]", { flag: "wx" }))
-    .catch(()=>{});
+  return fs
+    .mkdir(path.dirname(p), { recursive: true })
+    .then(() => fs.writeFile(p, '[]', { flag: 'wx' }))
+    .catch(() => {})
 }
 
 // 1) Gallery page
-const galleryPagePath = path.join(root, "src", "pages", "Gallery.tsx");
+const galleryPagePath = path.join(root, 'src', 'pages', 'Gallery.tsx')
 const galleryPageCode = `import { useEffect, useMemo, useState, useCallback } from 'react'
 import catchesRaw from '../data/catches.json'
 import productsRaw from '../data/products.json'
@@ -292,19 +302,19 @@ function LightboxContent({ rec, idx, onPrev, onNext }:{
     </div>
   )
 }
-`;
+`
 
-(async () => {
+;(async () => {
   // 1) Create Gallery page if missing or overwrite safely
-  const gpExists = await exists(galleryPagePath);
-  if (!gpExists) await write(galleryPagePath, galleryPageCode);
-  else console.log("• Gallery.tsx exists (leaving as-is).");
+  const gpExists = await exists(galleryPagePath)
+  if (!gpExists) await write(galleryPagePath, galleryPageCode)
+  else console.log('• Gallery.tsx exists (leaving as-is).')
 
   // 2) Ensure src/data/catches.json exists (empty array by default)
-  await ensureJsonArray(path.join(root, "src", "data", "catches.json"));
+  await ensureJsonArray(path.join(root, 'src', 'data', 'catches.json'))
 
   // 3) Build script: scripts/build-catches.mjs
-  const buildCatchesPath = path.join(root, "scripts", "build-catches.mjs");
+  const buildCatchesPath = path.join(root, 'scripts', 'build-catches.mjs')
   const buildCatchesCode = `// Node 18+
 // Build step: bundles /content/catches/*.json -> src/data/catches.json
 // Validates shape, skips drafts, normalizes images.
@@ -406,85 +416,89 @@ async function main() {
 }
 
 main().catch(e => { console.error(e); process.exit(1) })
-`;
-  if (!(await exists(buildCatchesPath))) await write(buildCatchesPath, buildCatchesCode);
-  else console.log("• scripts/build-catches.mjs exists (leaving as-is).");
+`
+  if (!(await exists(buildCatchesPath))) await write(buildCatchesPath, buildCatchesCode)
+  else console.log('• scripts/build-catches.mjs exists (leaving as-is).')
 
   // 4) Patch package.json prebuild to include build-catches
-  const pkgPath = path.join(root, "package.json");
-  const pkgText = await read(pkgPath);
+  const pkgPath = path.join(root, 'package.json')
+  const pkgText = await read(pkgPath)
   if (pkgText) {
-    let pkg = JSON.parse(pkgText);
-    const prebuild = pkg.scripts?.prebuild || "";
-    const want = "node scripts/build-catches.mjs";
-    if (!prebuild.includes("build-catalog.mjs")) {
+    let pkg = JSON.parse(pkgText)
+    const prebuild = pkg.scripts?.prebuild || ''
+    const want = 'node scripts/build-catches.mjs'
+    if (!prebuild.includes('build-catalog.mjs')) {
       // keep original prebuild if present, else create the full chain
-      const chain = ["node scripts/build-catalog.mjs", "node scripts/build-catches.mjs", "node scripts/build-sitemap.mjs"].join(" && ");
-      pkg.scripts = pkg.scripts || {};
-      pkg.scripts.prebuild = prebuild && !prebuild.includes(want)
-        ? prebuild + " && " + want
-        : chain;
-    } else if (!prebuild.includes("build-catches.mjs")) {
-      pkg.scripts.prebuild = prebuild.replace("build-catalog.mjs", "build-catalog.mjs && node scripts/build-catches.mjs");
+      const chain = [
+        'node scripts/build-catalog.mjs',
+        'node scripts/build-catches.mjs',
+        'node scripts/build-sitemap.mjs',
+      ].join(' && ')
+      pkg.scripts = pkg.scripts || {}
+      pkg.scripts.prebuild = prebuild && !prebuild.includes(want) ? prebuild + ' && ' + want : chain
+    } else if (!prebuild.includes('build-catches.mjs')) {
+      pkg.scripts.prebuild = prebuild.replace(
+        'build-catalog.mjs',
+        'build-catalog.mjs && node scripts/build-catches.mjs'
+      )
     }
-    await write(pkgPath, JSON.stringify(pkg, null, 2));
+    await write(pkgPath, JSON.stringify(pkg, null, 2))
   }
 
   // 5) Add /gallery route to src/App.tsx (if missing)
-  const appPath = path.join(root, "src", "App.tsx");
-  let appSrc = await read(appPath);
+  const appPath = path.join(root, 'src', 'App.tsx')
+  let appSrc = await read(appPath)
   if (appSrc && !appSrc.includes('path="gallery"')) {
     if (!appSrc.includes("import Gallery from './pages/Gallery'")) {
-      appSrc = appSrc.replace(
-        /(\nimport .*?;\s*)$/m,
-        `$1import Gallery from './pages/Gallery'\n`
-      );
+      appSrc = appSrc.replace(/(\nimport .*?;\s*)$/m, `$1import Gallery from './pages/Gallery'\n`)
     }
-    appSrc = appSrc.replace(
-      /<Routes>([\s\S]*?)<\/Routes>/m,
-      (m) => m.replace(
-        /<\/Routes>/m,
-        `  <Route path="gallery" element={<Gallery />} />\n</Routes>`
-      )
-    );
-    await write(appPath, appSrc);
+    appSrc = appSrc.replace(/<Routes>([\s\S]*?)<\/Routes>/m, (m) =>
+      m.replace(/<\/Routes>/m, `  <Route path="gallery" element={<Gallery />} />\n</Routes>`)
+    )
+    await write(appPath, appSrc)
   } else {
-    console.log("• App.tsx already has a /gallery route (or missing).");
+    console.log('• App.tsx already has a /gallery route (or missing).')
   }
 
   // 6) Add "Gallery" to Header nav if not present
-  const headerPath = path.join(root, "src", "components", "Header.tsx");
-  let headerSrc = await read(headerPath);
+  const headerPath = path.join(root, 'src', 'components', 'Header.tsx')
+  let headerSrc = await read(headerPath)
   if (headerSrc && !/Gallery<\/?/.test(headerSrc)) {
     // Handle two common nav patterns (nav('/xyz', 'Label') or <NavLink ...>Label</NavLink>)
     if (headerSrc.includes("{nav('/about', 'About')}")) {
-      headerSrc = headerSrc.replace("{nav('/about', 'About')}", "{nav('/gallery', 'Gallery')}\n          {nav('/about', 'About')}");
+      headerSrc = headerSrc.replace(
+        "{nav('/about', 'About')}",
+        "{nav('/gallery', 'Gallery')}\n          {nav('/about', 'About')}"
+      )
     } else if (headerSrc.includes("{nav('/catalog', 'Catalog')}")) {
-      headerSrc = headerSrc.replace("{nav('/catalog', 'Catalog')}", "{nav('/catalog', 'Catalog')}\n          {nav('/gallery', 'Gallery')}");
-    } else if (headerSrc.includes("About</NavLink>")) {
-      headerSrc = headerSrc.replace("About</NavLink>", "Gallery</NavLink> About</NavLink>");
+      headerSrc = headerSrc.replace(
+        "{nav('/catalog', 'Catalog')}",
+        "{nav('/catalog', 'Catalog')}\n          {nav('/gallery', 'Gallery')}"
+      )
+    } else if (headerSrc.includes('About</NavLink>')) {
+      headerSrc = headerSrc.replace('About</NavLink>', 'Gallery</NavLink> About</NavLink>')
     }
-    await write(headerPath, headerSrc);
+    await write(headerPath, headerSrc)
   } else {
-    console.log("• Header nav already includes Gallery (or missing).");
+    console.log('• Header nav already includes Gallery (or missing).')
   }
 
   // 7) Patch sitemap builder to include /gallery
-  const smPath = path.join(root, "scripts", "build-sitemap.mjs");
-  let smSrc = await read(smPath);
-  if (smSrc && !smSrc.includes("/gallery")) {
+  const smPath = path.join(root, 'scripts', 'build-sitemap.mjs')
+  let smSrc = await read(smPath)
+  if (smSrc && !smSrc.includes('/gallery')) {
     smSrc = smSrc.replace(
       /(\{ loc: `\$\{site\}\/catalog`,[\s\S]*?\},)/,
       `$1\n    { loc: \`\${site}/gallery\`, changefreq: 'weekly', priority: '0.6' },`
-    );
-    await write(smPath, smSrc);
+    )
+    await write(smPath, smSrc)
   } else {
-    console.log("• build-sitemap.mjs already includes /gallery (or missing).");
+    console.log('• build-sitemap.mjs already includes /gallery (or missing).')
   }
 
   // 8) Patch Decap CMS config to add Catches collection (append if not present)
-  const cfgPath = path.join(root, "public", "admin", "config.yml");
-  let cfgSrc = await read(cfgPath);
+  const cfgPath = path.join(root, 'public', 'admin', 'config.yml')
+  let cfgSrc = await read(cfgPath)
   const collectionBlock = `
   - label: "Catches"
     name: "catches"
@@ -523,27 +537,29 @@ main().catch(e => { console.error(e); process.exit(1) })
       - { label: "Status", name: "status", widget: "select", options: ["draft","published"], default: "published" }
       - { label: "Sort", name: "sort", widget: "number", required: false }
       - { label: "Published At", name: "publishedAt", widget: "datetime", required: false }
-`;
+`
   if (cfgSrc) {
     if (!/name:\s*["']?catches["']?/.test(cfgSrc)) {
       // Append under collections: or at end
       if (/^collections:\s*$/m.test(cfgSrc) || /(^collections:\s*\n)/m.test(cfgSrc)) {
-        cfgSrc = cfgSrc.replace(/(^collections:\s*\n)/m, `$1${collectionBlock}\n`);
+        cfgSrc = cfgSrc.replace(/(^collections:\s*\n)/m, `$1${collectionBlock}\n`)
       } else if (/^collections:/m.test(cfgSrc)) {
-        cfgSrc = cfgSrc.replace(/^collections:.*$/m, (line) => line + "\n" + collectionBlock);
+        cfgSrc = cfgSrc.replace(/^collections:.*$/m, (line) => line + '\n' + collectionBlock)
       } else {
-        cfgSrc = cfgSrc + `\ncollections:\n${collectionBlock}\n`;
+        cfgSrc = cfgSrc + `\ncollections:\n${collectionBlock}\n`
       }
-      await write(cfgPath, cfgSrc);
+      await write(cfgPath, cfgSrc)
     } else {
-      console.log("• Decap config already has 'catches' collection.");
+      console.log("• Decap config already has 'catches' collection.")
     }
   } else {
-    console.log("• public/admin/config.yml not found — skipping CMS patch.");
+    console.log('• public/admin/config.yml not found — skipping CMS patch.')
   }
 
   // 9) Ensure content/catches exists
-  await fs.mkdir(path.join(root, "content", "catches"), { recursive: true });
+  await fs.mkdir(path.join(root, 'content', 'catches'), { recursive: true })
 
-  console.log("\nAll set. Add entries via Admin → Catches. Build step will output src/data/catches.json.");
-})();
+  console.log(
+    '\nAll set. Add entries via Admin → Catches. Build step will output src/data/catches.json.'
+  )
+})()
