@@ -5,7 +5,7 @@
 > **Repository:** https://github.com/CDLBuddy/fishing-lure-site  
 > **Last updated:** 2025-10-11
 
-This guide shows you how to log in to the admin, add/edit products, manage photos, and publish changes to your website. No code required.
+This guide shows you how to log in to the admin, add/edit products, manage customer catch photos in the gallery, and publish changes to your website. No code required.
 
 ---
 
@@ -13,15 +13,16 @@ This guide shows you how to log in to the admin, add/edit products, manage photo
 
 1. [Access & Sign-in](#access--sign-in)  
 2. [Products: Add / Edit / Publish](#products-add--edit--publish)  
-3. [Images: Quality, Size, Filenames](#images-quality-size-filenames)  
-4. [Statuses: Draft vs Active vs Hidden](#statuses-draft-vs-active-vs-hidden)  
-5. [Variants (sizes, colors, weights)](#variants-sizes-colors-weights)  
-6. [Featured Products](#featured-products)  
-7. [Cart & Checkout (Stripe)](#cart--checkout-stripe)  
-8. [What Happens When You Publish](#what-happens-when-you-publish)  
-9. [Troubleshooting](#troubleshooting)  
-10. [FAQ](#faq)  
-11. [Support](#support)
+3. [Gallery: Customer Catches](#gallery-customer-catches)  
+4. [Images: Quality, Size, Filenames](#images-quality-size-filenames)  
+5. [Statuses: Draft vs Published](#statuses-draft-vs-published)  
+6. [Variants (sizes, colors, weights)](#variants-sizes-colors-weights)  
+7. [Featured Items](#featured-items)  
+8. [Cart & Checkout (Stripe)](#cart--checkout-stripe)  
+9. [What Happens When You Publish](#what-happens-when-you-publish)  
+10. [Troubleshooting](#troubleshooting)  
+11. [FAQ](#faq)  
+12. [Support](#support)
 
 ---
 
@@ -69,6 +70,47 @@ This guide shows you how to log in to the admin, add/edit products, manage photo
 
 ---
 
+## Gallery: Customer Catches
+
+**Where:** Admin → **Catches**
+
+The Gallery showcases real catches from real anglers using your lures. This builds trust and excitement!
+
+### Add a catch photo
+1. Click **New Catch**.
+2. Fill out the fields:
+   - **ID (slug)**: unique id (e.g. `catch-2025-10-11-dan-bass`).  
+     _Use format: catch-YYYY-MM-DD-name-species_
+   - **Title / Caption**: Brief description (e.g. `Dan's 5lb Largemouth`)
+   - **Date**: When the fish was caught
+   - **Angler**: Who caught it (optional, for credit)
+   - **Lure**: Select which product was used (creates automatic link!)
+   - **Location**: Where it was caught (e.g. `Lake Michigan`)
+   - **Species**: Type of fish (e.g. `Largemouth Bass`)
+   - **Length (in)** and **Weight (lb)**: Measurements (optional)
+   - **Tags**: Keywords for filtering (e.g. `bass`, `summer`, `2025`)
+   - **Images**: Upload 1+ photos of the catch
+     - Each image can have an **Alt** text for accessibility
+   - **Featured**: Toggle on to highlight this catch
+   - **Status**: Draft or Published
+   - **Sort**: Lower numbers appear first
+3. Click **Save**, then **Publish**.
+
+### Gallery features
+- **Filters**: Visitors can filter by category, specific lure, or search
+- **Lightbox**: Click any photo to view full-size with keyboard navigation (←/→/Esc)
+- **Product links**: Catches automatically link to the lure that was used
+- **Pagination**: Loads 24 catches at a time for fast performance
+
+### Tips for great gallery entries
+- Use high-quality photos showing the fish and lure together when possible
+- Fill in measurements to build credibility
+- Link to the specific lure product for easy shopping
+- Mark your best catches as **Featured**
+- Use consistent tags for easier filtering
+
+---
+
 ## Images: Quality, Size, Filenames
 
 - **Shape**: Landscape **3:2** (cards expect this shape).  
@@ -81,13 +123,18 @@ This guide shows you how to log in to the admin, add/edit products, manage photo
 
 ---
 
-## Statuses: Draft vs Active vs Hidden
+## Statuses: Draft vs Published
 
+**For Products:**
 - **Draft**: Not live. Safe place to work before publishing.
 - **Active**: Live on the site (shows in catalog, product page, sitemap).
 - **Hidden**: Not listed publicly; kept out of the sitemap.
 
-> When in doubt, use **Draft** until you’re ready, then switch to **Active**.
+**For Catches (Gallery):**
+- **Draft**: Not visible in gallery. Use while editing.
+- **Published**: Live in the gallery for visitors to see.
+
+> When in doubt, use **Draft** until you're ready, then switch to **Active** (products) or **Published** (catches).
 
 ---
 
@@ -102,9 +149,13 @@ Use **Variants** for different sizes, colors, weights, or hooks of the same lure
 
 ---
 
-## Featured Products
+## Featured Items
 
-Toggle **Featured** to highlight a product on the homepage/featured rails (if configured). Use sparingly so the best items stand out.
+**Products**: Toggle **Featured** to highlight a product on the homepage/featured rails (if configured).
+
+**Catches**: Toggle **Featured** to showcase exceptional catches at the top of the gallery.
+
+Use sparingly so the best items stand out.
 
 ---
 
@@ -136,14 +187,24 @@ Toggle **Featured** to highlight a product on the homepage/featured rails (if co
   - Verify you’re logged into the **GitHub account** that was invited.  
   - If needed, try a private/incognito window.
 
-- **I changed a product but don’t see it on the site**  
+- **I changed a product but don't see it on the site**  
   - Did you click **Publish** (not just Save)?  
   - Wait for the site to redeploy, then refresh.  
   - If still missing, confirm the product **Status** is **Active**.
 
-- **Photo isn’t updating**  
-  - Try a hard refresh.  
+- **Gallery catch isn't showing**  
+  - Verify **Status** is **Published** (not Draft).
+  - Click **Publish** to save and deploy changes.
+  - Wait for rebuild, then refresh the gallery page.
+
+- **Photo isn't updating**  
+  - Try a hard refresh (Ctrl+F5 or Cmd+Shift+R).  
   - For instant change, upload with a **new filename**.
+
+- **Can't select a lure when adding a catch**  
+  - Make sure products exist and are **Active**.
+  - The relation widget searches by product name and ID.
+  - If you just added a product, publish it first.
 
 - **Broken link / “Not found”**  
   - Don’t change the **ID (slug)** of products that are already public.  
@@ -168,6 +229,22 @@ JPG is recommended for size/quality. You can upload PNG, but file sizes will be 
 **Can I run sales or discount prices?**  
 Yes, once Stripe is live we can add sale prices or coupon codes through Stripe and reflect that on the site.
 
+**Should I add every catch to the gallery?**  
+Focus on quality over quantity! Add catches that:
+- Show the lure and fish clearly
+- Have good lighting and composition
+- Represent different species, locations, or lure types
+- Tell a story or build excitement
+
+**Can customers submit their own catch photos?**  
+Not automatically yet, but you can:
+- Create a form or email where customers send photos
+- Add them manually to the admin with credit to the angler
+- Or coordinate with the maintainer to add a submission feature
+
+**How many photos per catch?**  
+You can upload multiple photos for each catch. They'll appear in the lightbox viewer where visitors can navigate through them.
+
 ---
 
 ## Support
@@ -182,10 +259,22 @@ Yes, once Stripe is live we can add sale prices or coupon codes through Stripe a
 
 ### One-page Cheat Sheet
 
+**Products:**
 - **Login:** `/admin` → Login with GitHub → Products  
 - **Add:** New → fill fields → Save → **Publish**  
 - **Edit:** Open item → change → Save → **Publish**  
 - **Status:** Draft (not live) / Active (live) / Hidden (not listed)  
 - **Photos:** JPG, ~3:2, ~1600px, lowercase-hyphen filenames  
 - **Variants:** Each needs ID + Label + SKU  
+
+**Gallery (Catches):**
+- **Login:** `/admin` → Login with GitHub → Catches
+- **Add:** New Catch → fill fields (ID, title, angler, lure, images) → Save → **Publish**
+- **Status:** Draft (not visible) / Published (live in gallery)
+- **Link to lure:** Use the Lure dropdown to connect catch to product
+- **Photos:** Can upload multiple per catch, JPG preferred
+- **Featured:** Toggle on for your best catches
+
+**General:**
 - **Checkout:** Disabled until Stripe is connected
+- **Publish workflow:** Save changes → Publish → Wait for rebuild → Refresh site
