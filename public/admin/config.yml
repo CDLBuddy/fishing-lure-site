@@ -13,6 +13,14 @@ public_folder: "/images/uploads"
 
 publish_mode: editorial_workflow
 
+# Custom preview styling
+editor:
+  preview: true
+
+# Apply custom CSS to preview pane
+preview_styles:
+  - /admin/preview.css
+
 collections:
 
   - label: "Catches"
