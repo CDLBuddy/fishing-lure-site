@@ -1,12 +1,12 @@
 backend:
   name: github
-  repo: CDLBuddy/fishing-lure-site     # <-- your repo
+  repo: CDLBuddy/fishing-lure-site # <-- your repo
   branch: main
   base_url: https://fishing-lure-site.vercel.app
   auth_endpoint: /api/auth
 
-media_folder: "public/images/uploads"
-public_folder: "/images/uploads"
+media_folder: 'public/images/uploads'
+public_folder: '/images/uploads'
 
 # uncomment locally if you want to test CMS against your git without OAuth
 # local_backend: true
@@ -22,78 +22,111 @@ preview_styles:
   - /admin/preview.css
 
 collections:
-
-  - label: "Catches"
-    name: "catches"
-    label_singular: "Catch"
-    folder: "content/catches"
+  - label: 'Catches'
+    name: 'catches'
+    label_singular: 'Catch'
+    folder: 'content/catches'
     create: true
-    slug: "{{id}}"
-    extension: "json"
-    format: "json"
-    summary: "{{title}} ({{angler}})"
+    slug: '{{id}}'
+    extension: 'json'
+    format: 'json'
+    summary: '{{title}} ({{angler}})'
     fields:
-      - { label: "ID (slug)", name: "id", widget: "string", hint: "e.g. catch-2025-10-11-dan-bass" }
-      - { label: "Title / Caption", name: "title", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime", required: false }
-      - { label: "Angler", name: "angler", widget: "string", required: false }
-      - label: "Lure"
-        name: "lureId"
-        widget: "relation"
-        collection: "products"
-        search_fields: ["name","id"]
-        value_field: "id"
-        display_fields: ["name","id"]
+      - { label: 'ID (slug)', name: 'id', widget: 'string', hint: 'e.g. catch-2025-10-11-dan-bass' }
+      - { label: 'Title / Caption', name: 'title', widget: 'string' }
+      - { label: 'Date', name: 'date', widget: 'datetime', required: false }
+      - { label: 'Angler', name: 'angler', widget: 'string', required: false }
+      - label: 'Lure'
+        name: 'lureId'
+        widget: 'relation'
+        collection: 'products'
+        search_fields: ['name', 'id']
+        value_field: 'id'
+        display_fields: ['name', 'id']
         required: false
-      - { label: "Location", name: "location", widget: "string", required: false }
-      - { label: "Species", name: "species", widget: "string", required: false }
-      - { label: "Length (in)", name: "lengthIn", widget: "number", required: false, min: 0, step: 0.1 }
-      - { label: "Weight (lb)", name: "weightLb", widget: "number", required: false, min: 0, step: 0.1 }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
-      - label: "Images"
-        name: "images"
-        widget: "list"
+      - { label: 'Location', name: 'location', widget: 'string', required: false }
+      - { label: 'Species', name: 'species', widget: 'string', required: false }
+      - {
+          label: 'Length (in)',
+          name: 'lengthIn',
+          widget: 'number',
+          required: false,
+          min: 0,
+          step: 0.1,
+        }
+      - {
+          label: 'Weight (lb)',
+          name: 'weightLb',
+          widget: 'number',
+          required: false,
+          min: 0,
+          step: 0.1,
+        }
+      - { label: 'Tags', name: 'tags', widget: 'list', required: false }
+      - label: 'Images'
+        name: 'images'
+        widget: 'list'
         fields:
-          - { label: "Image", name: "src", widget: "image" }
-          - { label: "Alt", name: "alt", widget: "string", required: false }
-      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Status", name: "status", widget: "select", options: ["draft","published"], default: "published" }
-      - { label: "Sort", name: "sort", widget: "number", required: false }
-      - { label: "Published At", name: "publishedAt", widget: "datetime", required: false }
+          - { label: 'Image', name: 'src', widget: 'image' }
+          - { label: 'Alt', name: 'alt', widget: 'string', required: false }
+      - { label: 'Featured', name: 'featured', widget: 'boolean', default: false, required: false }
+      - {
+          label: 'Status',
+          name: 'status',
+          widget: 'select',
+          options: ['draft', 'published'],
+          default: 'published',
+        }
+      - { label: 'Sort', name: 'sort', widget: 'number', required: false }
+      - { label: 'Published At', name: 'publishedAt', widget: 'datetime', required: false }
 
-  - label: "Products"
-    name: "products"
-    label_singular: "Product"
-    folder: "content/products"
+  - label: 'Products'
+    name: 'products'
+    label_singular: 'Product'
+    folder: 'content/products'
     create: true
-    slug: "{{id}}"         # keep file name = product id
-    extension: "json"
-    format: "json"
-    summary: "{{name}} ({{category}})"
+    slug: '{{id}}' # keep file name = product id
+    extension: 'json'
+    format: 'json'
+    summary: '{{name}} ({{category}})'
     fields:
-      - { label: "ID (slug)", name: "id", widget: "string", hint: "e.g. sb-001" }
-      - { label: "Name", name: "name", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - label: "Category"
-        name: "category"
-        widget: "select"
-        options: ["spinnerbait","jig","crankbait","topwater","soft-plastic"]
-      - label: "Images"
-        name: "images"
-        widget: "list"
-        field: { label: "Image", name: "src", widget: "image" }  # results in [{ "src": "/images/uploads/…" }]
-      - label: "Variants"
-        name: "variants"
-        widget: "list"
-        summary: "{{fields.label}}"
+      - { label: 'ID (slug)', name: 'id', widget: 'string', hint: 'e.g. sb-001' }
+      - { label: 'Name', name: 'name', widget: 'string' }
+      - { label: 'Description', name: 'description', widget: 'text' }
+      - label: 'Category'
+        name: 'category'
+        widget: 'select'
+        options: ['spinnerbait', 'jig', 'crankbait', 'topwater', 'soft-plastic']
+      - label: 'Images'
+        name: 'images'
+        widget: 'list'
+        field: { label: 'Image', name: 'src', widget: 'image' } # results in [{ "src": "/images/uploads/…" }]
+      - label: 'Variants'
+        name: 'variants'
+        widget: 'list'
+        summary: '{{fields.label}}'
         fields:
-          - { label: "Variant ID", name: "id", widget: "string" }
-          - { label: "Label", name: "label", widget: "string", hint: "e.g., 3/8 oz • Chartreuse" }
-          - { label: "SKU", name: "sku", widget: "string" }
-          - { label: "Stripe Price ID", name: "stripePriceId", widget: "string", required: false }
-          - { label: "Price (USD)", name: "price", widget: "number", required: false, min: 0, step: 0.01 }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
-      - { label: "Status", name: "status", widget: "select", options: ["draft","active","hidden"], default: "active", required: false }
-      - { label: "Sort", name: "sort", widget: "number", required: false }
-      - { label: "Published At", name: "publishedAt", widget: "datetime", required: false }
+          - { label: 'Variant ID', name: 'id', widget: 'string' }
+          - { label: 'Label', name: 'label', widget: 'string', hint: 'e.g., 3/8 oz • Chartreuse' }
+          - { label: 'SKU', name: 'sku', widget: 'string' }
+          - { label: 'Stripe Price ID', name: 'stripePriceId', widget: 'string', required: false }
+          - {
+              label: 'Price (USD)',
+              name: 'price',
+              widget: 'number',
+              required: false,
+              min: 0,
+              step: 0.01,
+            }
+      - { label: 'Tags', name: 'tags', widget: 'list', required: false }
+      - { label: 'Featured', name: 'featured', widget: 'boolean', default: false, required: false }
+      - {
+          label: 'Status',
+          name: 'status',
+          widget: 'select',
+          options: ['draft', 'active', 'hidden'],
+          default: 'active',
+          required: false,
+        }
+      - { label: 'Sort', name: 'sort', widget: 'number', required: false }
+      - { label: 'Published At', name: 'publishedAt', widget: 'datetime', required: false }
