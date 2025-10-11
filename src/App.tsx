@@ -7,6 +7,7 @@ import Product from './pages/Product'
 import Cart from './pages/Cart'
 import Success from './pages/Success'
 import Cancel from './pages/Cancel'
+import Gallery from './pages/Gallery'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import ToastProvider from './components/ToastProvider'
@@ -22,11 +23,11 @@ export default function App() {
           <Route path="catalog" element={<Catalog />} />
           <Route path="product/:id" element={<Product />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="gallery" element={<Gallery />} />
           <Route path="success" element={<Success />} />
           <Route path="cancel" element={<Cancel />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="gallery" element={<Gallery />} />
-</Routes>
+        </Routes>
         <Footer />
       </ToastProvider>
     </BrowserRouter>
