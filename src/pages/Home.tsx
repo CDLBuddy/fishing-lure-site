@@ -22,7 +22,7 @@ export default function Home() {
             borderRadius: 'var(--radius-2)',
             textDecoration: 'none',
             fontWeight: 600,
-            marginTop: 16
+            marginTop: 16,
           }}
         >
           Browse Catalog

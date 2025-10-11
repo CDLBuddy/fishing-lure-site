@@ -4,44 +4,48 @@
 // - Injects favicon/OG/Twitter meta into index.html
 // Safe to run multiple times; it won't duplicate injections.
 
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, "..");
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const root = path.resolve(__dirname, '..')
 
 // ---------- helpers ----------
 async function read(file) {
-  try { return await fs.readFile(file, "utf8"); } catch { return null; }
+  try {
+    return await fs.readFile(file, 'utf8')
+  } catch {
+    return null
+  }
 }
 async function write(file, text) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, text);
+  await fs.mkdir(path.dirname(file), { recursive: true })
+  await fs.writeFile(file, text)
 }
 function has(hay, needle) {
-  return hay && hay.includes(needle);
+  return hay && hay.includes(needle)
 }
 function appendOnce(orig, block, marker) {
-  if (has(orig, marker)) return orig; // already added
-  return `${orig}\n\n/* ${marker} */\n${block}\n`;
+  if (has(orig, marker)) return orig // already added
+  return `${orig}\n\n/* ${marker} */\n${block}\n`
 }
 function insertBefore(orig, markerRegex, block, presenceCheck) {
-  if (has(orig, presenceCheck)) return orig;
-  const idx = orig.search(markerRegex);
-  if (idx === -1) return orig + "\n" + block + "\n";
-  return orig.slice(0, idx) + block + "\n" + orig.slice(idx);
+  if (has(orig, presenceCheck)) return orig
+  const idx = orig.search(markerRegex)
+  if (idx === -1) return orig + '\n' + block + '\n'
+  return orig.slice(0, idx) + block + '\n' + orig.slice(idx)
 }
 
 // ---------- 1) Header.tsx ----------
 async function updateHeader() {
-  const file = path.join(root, "src", "components", "Header.tsx");
-  const before = await read(file);
-  if (!before) return { file, changed: false, note: "missing (skipped)" };
+  const file = path.join(root, 'src', 'components', 'Header.tsx')
+  const before = await read(file)
+  if (!before) return { file, changed: false, note: 'missing (skipped)' }
 
   // If it already has the new class hook, skip
-  if (has(before, "site-header")) {
-    return { file, changed: false, note: "already polished" };
+  if (has(before, 'site-header')) {
+    return { file, changed: false, note: 'already polished' }
   }
 
   const after = `import { Link, NavLink } from 'react-router-dom'
@@ -75,16 +79,16 @@ export default function Header() {
     </header>
   )
 }
-`;
-  await write(file, after);
-  return { file, changed: true };
+`
+  await write(file, after)
+  return { file, changed: true }
 }
 
 // ---------- 2) base.css ----------
 async function updateBaseCss() {
-  const file = path.join(root, "src", "styles", "base.css");
-  const before = await read(file);
-  if (!before) return { file, changed: false, note: "missing (skipped)" };
+  const file = path.join(root, 'src', 'styles', 'base.css')
+  const before = await read(file)
+  if (!before) return { file, changed: false, note: 'missing (skipped)' }
 
   const CSS_HEADER = `
 .site-header {
@@ -122,7 +126,7 @@ async function updateBaseCss() {
   border-radius: 2px;
 }
 .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
-`;
+`
 
   const CSS_POLISH = `
 /* Subtle motion + focus polish */
@@ -175,20 +179,20 @@ h2, .h2 { font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; letter-spacing
     radial-gradient(800px 240px at 0% -10%, color-mix(in oklab, var(--brand), transparent 92%), transparent 60%),
     var(--bg);
 }
-`;
+`
 
-  let after = before;
-  after = appendOnce(after, CSS_HEADER, "POLISH: header/nav styles");
-  after = appendOnce(after, CSS_POLISH, "POLISH: buttons/cards/badges/hero/img-frame");
-  if (after !== before) await write(file, after);
-  return { file, changed: after !== before };
+  let after = before
+  after = appendOnce(after, CSS_HEADER, 'POLISH: header/nav styles')
+  after = appendOnce(after, CSS_POLISH, 'POLISH: buttons/cards/badges/hero/img-frame')
+  if (after !== before) await write(file, after)
+  return { file, changed: after !== before }
 }
 
 // ---------- 3) index.html meta/og ----------
 async function updateIndexHtml() {
-  const file = path.join(root, "index.html");
-  const before = await read(file);
-  if (!before) return { file, changed: false, note: "missing (skipped)" };
+  const file = path.join(root, 'index.html')
+  const before = await read(file)
+  if (!before) return { file, changed: false, note: 'missing (skipped)' }
 
   const META = `
     <!-- POLISH: brand favicon & social preview -->
@@ -199,26 +203,28 @@ async function updateIndexHtml() {
     <meta property="og:description" content="Custom, hand-made fishing lures. Built to be fished—not framed.">
     <meta property="og:image" content="/images/logo-rip-512.png">
     <meta name="twitter:card" content="summary_large_image">
-`;
+`
 
-  const headClose = /<\/head>/i;
-  const after = insertBefore(before, headClose, META, 'og:site_name" content="RIP Custom Lures"');
-  if (after !== before) await write(file, after);
-  return { file, changed: after !== before };
+  const headClose = /<\/head>/i
+  const after = insertBefore(before, headClose, META, 'og:site_name" content="RIP Custom Lures"')
+  if (after !== before) await write(file, after)
+  return { file, changed: after !== before }
 }
 
 // ---------- run all ----------
-const results = [];
-results.push(await updateHeader());
-results.push(await updateBaseCss());
-results.push(await updateIndexHtml());
+const results = []
+results.push(await updateHeader())
+results.push(await updateBaseCss())
+results.push(await updateIndexHtml())
 
-const summary = results.map(r => {
-  const s = path.relative(root, r.file);
-  return `- ${s}: ${r.changed ? "UPDATED" : "ok"}${r.note ? ` (${r.note})` : ""}`;
-}).join("\n");
+const summary = results
+  .map((r) => {
+    const s = path.relative(root, r.file)
+    return `- ${s}: ${r.changed ? 'UPDATED' : 'ok'}${r.note ? ` (${r.note})` : ''}`
+  })
+  .join('\n')
 
-console.log("Brand polish completed:\n" + summary);
-console.log("\nNext (optional):");
-console.log('• In ProductCard.tsx, wrap images with <div className="img-frame"><img .../></div>');
-console.log('• In Home.tsx, wrap hero content in <section className="hero container">…</section>');
+console.log('Brand polish completed:\n' + summary)
+console.log('\nNext (optional):')
+console.log('• In ProductCard.tsx, wrap images with <div className="img-frame"><img .../></div>')
+console.log('• In Home.tsx, wrap hero content in <section className="hero container">…</section>')

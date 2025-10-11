@@ -5,7 +5,7 @@ import { fmtUSD } from '../utils/currency'
 
 function priceRangeLabel(p: Product): string | null {
   const prices = p.variants
-    .map(v => (typeof v.price === 'number' ? v.price : null))
+    .map((v) => (typeof v.price === 'number' ? v.price : null))
     .filter((n): n is number => n !== null)
 
   if (prices.length === 0) return null
@@ -38,7 +38,7 @@ export default function ProductCard({ p }: { p: Product }) {
               borderRadius: 999,
               fontSize: 12,
               fontWeight: 700,
-              zIndex: 1
+              zIndex: 1,
             }}
           >
             Unavailable
@@ -46,16 +46,18 @@ export default function ProductCard({ p }: { p: Product }) {
         )}
 
         <div className="img-frame">
-          <img
-            src={img}
-            alt={p.name}
-            loading="lazy"
-            decoding="async"
-          />
+          <img src={img} alt={p.name} loading="lazy" decoding="async" />
         </div>
 
         <div style={{ padding: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'baseline' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: 8,
+              alignItems: 'baseline',
+            }}
+          >
             <div style={{ fontWeight: 600, marginBottom: 6, lineHeight: 1.2 }}>{p.name}</div>
             {prLabel && <div style={{ fontWeight: 700 }}>{prLabel}</div>}
           </div>
