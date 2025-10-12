@@ -5,8 +5,8 @@ backend:
   base_url: https://fishing-lure-site.vercel.app
   auth_endpoint: /api/auth
 
-media_folder: "public/images/uploads"
-public_folder: "/images/uploads"
+media_folder: 'public/images/uploads'
+public_folder: '/images/uploads'
 
 publish_mode: editorial_workflow
 
@@ -17,312 +17,312 @@ preview_styles:
   - /admin/preview.css
 
 slug:
-  encoding: "ascii"
+  encoding: 'ascii'
   clean_accents: true
 
 collections:
-  - label: "Gallery (Catches)"
-    name: "catches"
-    label_singular: "Catch Photo"
-    folder: "content/catches"
+  - label: 'Gallery (Catches)'
+    name: 'catches'
+    label_singular: 'Catch Photo'
+    folder: 'content/catches'
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    extension: "json"
-    format: "json"
-    summary: "{{title}}  {{angler}}  {{species}}"
-    sortable_fields: ["title", "angler", "date", "featured"]
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: 'json'
+    format: 'json'
+    summary: '{{title}}  {{angler}}  {{species}}'
+    sortable_fields: ['title', 'angler', 'date', 'featured']
     view_filters:
       - label: Featured Only
         field: featured
         pattern: true
       - label: Published
         field: status
-        pattern: "published"
+        pattern: 'published'
     fields:
-      - label: "ID (auto-generated)"
-        name: "id"
-        widget: "string"
+      - label: 'ID (auto-generated)'
+        name: 'id'
+        widget: 'string'
         required: false
-        hint: "Auto-generated from date and title"
-        pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens only"]
-      - label: "Photo Title/Caption"
-        name: "title"
-        widget: "string"
+        hint: 'Auto-generated from date and title'
+        pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']
+      - label: 'Photo Title/Caption'
+        name: 'title'
+        widget: 'string'
         hint: "Example: Dan's 5lb Largemouth Bass"
-      - label: "When was it caught?"
-        name: "date"
-        widget: "datetime"
-        default: ""
-        date_format: "MM/DD/YYYY"
+      - label: 'When was it caught?'
+        name: 'date'
+        widget: 'datetime'
+        default: ''
+        date_format: 'MM/DD/YYYY'
         time_format: false
         required: false
-      - label: "Angler Name"
-        name: "angler"
-        widget: "string"
+      - label: 'Angler Name'
+        name: 'angler'
+        widget: 'string'
         required: false
-        hint: "Who caught it?"
-      - label: "Fish Species"
-        name: "species"
-        widget: "select"
+        hint: 'Who caught it?'
+      - label: 'Fish Species'
+        name: 'species'
+        widget: 'select'
         required: false
         options:
-          - "Largemouth Bass"
-          - "Smallmouth Bass"
-          - "Spotted Bass"
-          - "Striped Bass"
-          - "Pike"
-          - "Muskie"
-          - "Walleye"
-          - "Crappie"
-          - "Bluegill"
-          - "Trout"
-          - "Catfish"
-          - "Redfish"
-          - "Snook"
-          - "Tarpon"
-          - "Other"
-      - label: "Location"
-        name: "location"
-        widget: "string"
+          - 'Largemouth Bass'
+          - 'Smallmouth Bass'
+          - 'Spotted Bass'
+          - 'Striped Bass'
+          - 'Pike'
+          - 'Muskie'
+          - 'Walleye'
+          - 'Crappie'
+          - 'Bluegill'
+          - 'Trout'
+          - 'Catfish'
+          - 'Redfish'
+          - 'Snook'
+          - 'Tarpon'
+          - 'Other'
+      - label: 'Location'
+        name: 'location'
+        widget: 'string'
         required: false
-        hint: "Example: Lake Michigan"
-      - label: "Length (inches)"
-        name: "lengthIn"
-        widget: "number"
+        hint: 'Example: Lake Michigan'
+      - label: 'Length (inches)'
+        name: 'lengthIn'
+        widget: 'number'
         required: false
         min: 0
         max: 100
         step: 0.5
-        value_type: "float"
-      - label: "Weight (pounds)"
-        name: "weightLb"
-        widget: "number"
+        value_type: 'float'
+      - label: 'Weight (pounds)'
+        name: 'weightLb'
+        widget: 'number'
         required: false
         min: 0
         max: 100
         step: 0.1
-        value_type: "float"
-      - label: "Which Lure Was Used?"
-        name: "lureId"
-        widget: "relation"
-        collection: "products"
-        search_fields: ["name", "id"]
-        value_field: "id"
-        display_fields: ["name", "category"]
+        value_type: 'float'
+      - label: 'Which Lure Was Used?'
+        name: 'lureId'
+        widget: 'relation'
+        collection: 'products'
+        search_fields: ['name', 'id']
+        value_field: 'id'
+        display_fields: ['name', 'category']
         required: false
-      - label: "Photos"
-        name: "images"
-        widget: "list"
+      - label: 'Photos'
+        name: 'images'
+        widget: 'list'
         collapsed: false
-        summary: "{{fields.alt}}"
-        hint: "Upload 1-5 photos"
+        summary: '{{fields.alt}}'
+        hint: 'Upload 1-5 photos'
         fields:
-          - label: "Photo"
-            name: "src"
-            widget: "image"
-          - label: "Description"
-            name: "alt"
-            widget: "string"
+          - label: 'Photo'
+            name: 'src'
+            widget: 'image'
+          - label: 'Description'
+            name: 'alt'
+            widget: 'string'
             required: false
-      - label: "Tags"
-        name: "tags"
-        widget: "list"
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'list'
         required: false
-      - label: "Featured"
-        name: "featured"
-        widget: "boolean"
+      - label: 'Featured'
+        name: 'featured'
+        widget: 'boolean'
         default: false
         required: false
-      - label: "Status"
-        name: "status"
-        widget: "select"
+      - label: 'Status'
+        name: 'status'
+        widget: 'select'
         options:
-          - label: "Draft"
-            value: "draft"
-          - label: "Published"
-            value: "published"
-        default: "draft"
-      - label: "Sort Order"
-        name: "sort"
-        widget: "number"
+          - label: 'Draft'
+            value: 'draft'
+          - label: 'Published'
+            value: 'published'
+        default: 'draft'
+      - label: 'Sort Order'
+        name: 'sort'
+        widget: 'number'
         required: false
-      - label: "Publish Date"
-        name: "publishedAt"
-        widget: "datetime"
+      - label: 'Publish Date'
+        name: 'publishedAt'
+        widget: 'datetime'
         required: false
 
-  - label: "Products (Lures)"
-    name: "products"
-    label_singular: "Product"
-    folder: "content/products"
+  - label: 'Products (Lures)'
+    name: 'products'
+    label_singular: 'Product'
+    folder: 'content/products'
     create: true
-    slug: "{{slug}}"
-    extension: "json"
-    format: "json"
-    summary: "{{name}} • {{category}}"
-    sortable_fields: ["name", "category", "featured", "sort"]
+    slug: '{{slug}}'
+    extension: 'json'
+    format: 'json'
+    summary: '{{name}} • {{category}}'
+    sortable_fields: ['name', 'category', 'featured', 'sort']
     view_filters:
       - label: Featured Only
         field: featured
         pattern: true
       - label: Active Products
         field: status
-        pattern: "active"
+        pattern: 'active'
     fields:
-      - label: "Product ID"
-        name: "id"
-        widget: "string"
-        hint: "Short code (e.g., sb-001, crank-blue)"
-        pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens only"]
-      - label: "Product Name"
-        name: "name"
-        widget: "string"
-        hint: "Example: River Shimmer Spinnerbait"
-      - label: "Description"
-        name: "description"
-        widget: "text"
-        hint: "Describe the lure, how it works, best conditions"
-        pattern: ["^.{20,}$", "Please write at least 20 characters"]
-      - label: "Category"
-        name: "category"
-        widget: "select"
+      - label: 'Product ID'
+        name: 'id'
+        widget: 'string'
+        hint: 'Short code (e.g., sb-001, crank-blue)'
+        pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']
+      - label: 'Product Name'
+        name: 'name'
+        widget: 'string'
+        hint: 'Example: River Shimmer Spinnerbait'
+      - label: 'Description'
+        name: 'description'
+        widget: 'text'
+        hint: 'Describe the lure, how it works, best conditions'
+        pattern: ['^.{20,}$', 'Please write at least 20 characters']
+      - label: 'Category'
+        name: 'category'
+        widget: 'select'
         options:
-          - label: "Spinnerbait"
-            value: "spinnerbait"
-          - label: "Jig"
-            value: "jig"
-          - label: "Crankbait"
-            value: "crankbait"
-          - label: "Topwater"
-            value: "topwater"
-          - label: "Soft Plastic"
-            value: "soft-plastic"
-      - label: "Product Photos"
-        name: "images"
-        widget: "list"
+          - label: 'Spinnerbait'
+            value: 'spinnerbait'
+          - label: 'Jig'
+            value: 'jig'
+          - label: 'Crankbait'
+            value: 'crankbait'
+          - label: 'Topwater'
+            value: 'topwater'
+          - label: 'Soft Plastic'
+            value: 'soft-plastic'
+      - label: 'Product Photos'
+        name: 'images'
+        widget: 'list'
         collapsed: false
-        summary: "Photo {{index}}"
-        hint: "Upload 1-5 product photos"
+        summary: 'Photo {{index}}'
+        hint: 'Upload 1-5 product photos'
         field:
-          label: "Image"
-          name: "src"
-          widget: "image"
-      - label: "Variants (Sizes/Colors/Weights)"
-        name: "variants"
-        widget: "list"
+          label: 'Image'
+          name: 'src'
+          widget: 'image'
+      - label: 'Variants (Sizes/Colors/Weights)'
+        name: 'variants'
+        widget: 'list'
         collapsed: false
-        summary: "{{fields.label}} • ${{fields.price}}"
-        hint: "Add different options"
+        summary: '{{fields.label}} • ${{fields.price}}'
+        hint: 'Add different options'
         fields:
-          - label: "Variant ID"
-            name: "id"
-            widget: "string"
-            hint: "Internal code (e.g., v1, 3-8oz-chart)"
-            pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens"]
-          - label: "Variant Label"
-            name: "label"
-            widget: "select"
+          - label: 'Variant ID'
+            name: 'id'
+            widget: 'string'
+            hint: 'Internal code (e.g., v1, 3-8oz-chart)'
+            pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens']
+          - label: 'Variant Label'
+            name: 'label'
+            widget: 'select'
             options:
-              - label: "1/8 oz"
-                value: "1/8 oz"
-              - label: "1/4 oz"
-                value: "1/4 oz"
-              - label: "3/8 oz"
-                value: "3/8 oz"
-              - label: "1/2 oz"
-                value: "1/2 oz"
-              - label: "3/4 oz"
-                value: "3/4 oz"
-              - label: "1 oz"
-                value: "1 oz"
-              - label: "Chartreuse"
-                value: "Chartreuse"
-              - label: "White"
-                value: "White"
-              - label: "Black"
-                value: "Black"
-              - label: "Blue"
-                value: "Blue"
-              - label: "Silver"
-                value: "Silver"
-              - label: "Gold"
-                value: "Gold"
-              - label: "Red"
-                value: "Red"
-              - label: "Green"
-                value: "Green"
-              - label: "Purple"
-                value: "Purple"
-              - label: "Brown/Orange"
-                value: "Brown/Orange"
-              - label: "Natural Shad"
-                value: "Natural Shad"
-              - label: "Fire Tiger"
-                value: "Fire Tiger"
-              - label: "1/8 oz • Chartreuse"
-                value: "1/8 oz • Chartreuse"
-              - label: "1/4 oz • Chartreuse"
-                value: "1/4 oz • Chartreuse"
-              - label: "3/8 oz • Chartreuse"
-                value: "3/8 oz • Chartreuse"
-              - label: "1/2 oz • Chartreuse"
-                value: "1/2 oz • Chartreuse"
-              - label: "1/8 oz • White"
-                value: "1/8 oz • White"
-              - label: "1/4 oz • White"
-                value: "1/4 oz • White"
-              - label: "3/8 oz • White"
-                value: "3/8 oz • White"
-              - label: "1/2 oz • White"
-                value: "1/2 oz • White"
-              - label: "Custom Option"
-                value: "Custom"
+              - label: '1/8 oz'
+                value: '1/8 oz'
+              - label: '1/4 oz'
+                value: '1/4 oz'
+              - label: '3/8 oz'
+                value: '3/8 oz'
+              - label: '1/2 oz'
+                value: '1/2 oz'
+              - label: '3/4 oz'
+                value: '3/4 oz'
+              - label: '1 oz'
+                value: '1 oz'
+              - label: 'Chartreuse'
+                value: 'Chartreuse'
+              - label: 'White'
+                value: 'White'
+              - label: 'Black'
+                value: 'Black'
+              - label: 'Blue'
+                value: 'Blue'
+              - label: 'Silver'
+                value: 'Silver'
+              - label: 'Gold'
+                value: 'Gold'
+              - label: 'Red'
+                value: 'Red'
+              - label: 'Green'
+                value: 'Green'
+              - label: 'Purple'
+                value: 'Purple'
+              - label: 'Brown/Orange'
+                value: 'Brown/Orange'
+              - label: 'Natural Shad'
+                value: 'Natural Shad'
+              - label: 'Fire Tiger'
+                value: 'Fire Tiger'
+              - label: '1/8 oz • Chartreuse'
+                value: '1/8 oz • Chartreuse'
+              - label: '1/4 oz • Chartreuse'
+                value: '1/4 oz • Chartreuse'
+              - label: '3/8 oz • Chartreuse'
+                value: '3/8 oz • Chartreuse'
+              - label: '1/2 oz • Chartreuse'
+                value: '1/2 oz • Chartreuse'
+              - label: '1/8 oz • White'
+                value: '1/8 oz • White'
+              - label: '1/4 oz • White'
+                value: '1/4 oz • White'
+              - label: '3/8 oz • White'
+                value: '3/8 oz • White'
+              - label: '1/2 oz • White'
+                value: '1/2 oz • White'
+              - label: 'Custom Option'
+                value: 'Custom'
             allow_add: true
-            hint: "Select from dropdown or type custom"
-          - label: "SKU"
-            name: "sku"
-            widget: "string"
-            hint: "Your inventory code"
-          - label: "Price (USD)"
-            name: "price"
-            widget: "number"
+            hint: 'Select from dropdown or type custom'
+          - label: 'SKU'
+            name: 'sku'
+            widget: 'string'
+            hint: 'Your inventory code'
+          - label: 'Price (USD)'
+            name: 'price'
+            widget: 'number'
             required: false
             min: 0
             step: 0.01
-            value_type: "float"
-            hint: "Display price. Example: 12.99"
-          - label: "Stripe Price ID"
-            name: "stripePriceId"
-            widget: "string"
+            value_type: 'float'
+            hint: 'Display price. Example: 12.99'
+          - label: 'Stripe Price ID'
+            name: 'stripePriceId'
+            widget: 'string'
             required: false
-            hint: "Leave blank until checkout enabled"
-      - label: "Tags"
-        name: "tags"
-        widget: "list"
+            hint: 'Leave blank until checkout enabled'
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'list'
         required: false
-        hint: "Keywords for search/filtering"
-      - label: "Featured"
-        name: "featured"
-        widget: "boolean"
+        hint: 'Keywords for search/filtering'
+      - label: 'Featured'
+        name: 'featured'
+        widget: 'boolean'
         default: false
         required: false
-      - label: "Status"
-        name: "status"
-        widget: "select"
+      - label: 'Status'
+        name: 'status'
+        widget: 'select'
         options:
-          - label: "Draft"
-            value: "draft"
-          - label: "Active"
-            value: "active"
-          - label: "Hidden"
-            value: "hidden"
-        default: "draft"
+          - label: 'Draft'
+            value: 'draft'
+          - label: 'Active'
+            value: 'active'
+          - label: 'Hidden'
+            value: 'hidden'
+        default: 'draft'
         required: false
-      - label: "Sort Order"
-        name: "sort"
-        widget: "number"
+      - label: 'Sort Order'
+        name: 'sort'
+        widget: 'number'
         required: false
-      - label: "Publish Date"
-        name: "publishedAt"
-        widget: "datetime"
+      - label: 'Publish Date'
+        name: 'publishedAt'
+        widget: 'datetime'
         required: false
