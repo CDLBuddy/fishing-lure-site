@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: CDLBuddy/fishing-lure-site
+  repo: CDLBuddy/fishing-lure-site # <-- your repo
   branch: main
   base_url: https://fishing-lure-site.vercel.app
   auth_endpoint: /api/auth
@@ -380,51 +380,35 @@ collections:
             }
 
       # STEP 5: Publishing Options (Collapsed)
-      - label: '⚙️ Publishing Options'
-        name: 'publishing_section'
-        widget: 'object'
-        collapsed: true
+        name: 'images'
+        widget: 'list'
+        field: { label: 'Image', name: 'src', widget: 'image' } # results in [{ "src": "/images/uploads/…" }]
+      - label: 'Variants'
+        name: 'variants'
+        widget: 'list'
+        summary: '{{fields.label}}'
         fields:
+          - { label: 'Variant ID', name: 'id', widget: 'string' }
+          - { label: 'Label', name: 'label', widget: 'string', hint: 'e.g., 3/8 oz • Chartreuse' }
+          - { label: 'SKU', name: 'sku', widget: 'string' }
+          - { label: 'Stripe Price ID', name: 'stripePriceId', widget: 'string', required: false }
           - {
-              label: 'Status',
-              name: 'status',
-              widget: 'select',
-              options:
-                [
-                  { label: '✏️ Draft (not public)', value: 'draft' },
-                  { label: '✅ Active (visible on site)', value: 'active' },
-                  { label: '👁️ Hidden (not listed)', value: 'hidden' }
-                ],
-              default: 'draft',
-              required: false,
-              hint: 'Control visibility: Draft = work in progress, Active = live, Hidden = keep but don\'t list'
-            }
-          - {
-              label: '⭐ Featured',
-              name: 'featured',
-              widget: 'boolean',
-              default: false,
-              required: false,
-              hint: 'Highlight this product on homepage'
-            }
-          - {
-              label: 'Sort Order',
-              name: 'sort',
+              label: 'Price (USD)',
+              name: 'price',
               widget: 'number',
               required: false,
-              hint: 'Lower numbers appear first (leave blank for auto-sort)'
+              min: 0,
+              step: 0.01,
             }
-          - {
-              label: 'Tags',
-              name: 'tags',
-              widget: 'list',
-              required: false,
-              hint: 'Keywords for search/filtering (e.g., bass, deep-water, slow-roll)'
-            }
-          - {
-              label: 'Publish Date',
-              name: 'publishedAt',
-              widget: 'datetime',
-              required: false,
-              hint: 'Optional: Set when product was added'
-            }
+      - { label: 'Tags', name: 'tags', widget: 'list', required: false }
+      - { label: 'Featured', name: 'featured', widget: 'boolean', default: false, required: false }
+      - {
+          label: 'Status',
+          name: 'status',
+          widget: 'select',
+          options: ['draft', 'active', 'hidden'],
+          default: 'active',
+          required: false,
+        }
+      - { label: 'Sort', name: 'sort', widget: 'number', required: false }
+      - { label: 'Published At', name: 'publishedAt', widget: 'datetime', required: false }
