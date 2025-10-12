@@ -1,816 +1,328 @@
-backend:backend:
-
-  name: github  name: github
-
-  repo: CDLBuddy/fishing-lure-site  repo: CDLBuddy/fishing-lure-site
-
-  branch: main  branch: main
-
-  base_url: https://fishing-lure-site.vercel.app  base_url: https://fishing-lure-site.vercel.app
-
-  auth_endpoint: /api/auth  auth_endpoint: /api/auth
-
-
-
-media_folder: 'public/images/uploads'media_folder: 'public/images/uploads'
-
-public_folder: '/images/uploads'public_folder: '/images/uploads'
-
-
-
-# uncomment locally if you want to test CMS against your git without OAuth# uncomment locally if you want to test CMS against your git without OAuth
-
-# local_backend: true# local_backend: true
-
-
-
-publish_mode: editorial_workflowpublish_mode: editorial_workflow
-
-
-
-# Custom preview styling# Custom preview styling
-
-editor:editor:
-
-  preview: true  preview: true
-
-
-
-# Apply custom CSS to preview pane# Apply custom CSS to preview pane
-
-preview_styles:preview_styles:
-
-  - /admin/preview.css  - /admin/preview.css
-
-
-
-# Slug configuration for cleaner auto-generated IDs# Slug configuration for cleaner auto-generated IDs
-
-slug:slug:
-
-  encoding: 'ascii'  encoding: 'ascii'
-
-  clean_accents: true  clean_accents: true
-
-
-
-collections:collections:
-
-  # ========================================  # ========================================
-
-  # CATCHES - Customer Gallery Photos  # CATCHES - Customer Gallery Photos
-
-  # ========================================  # ========================================
-
-  - label: '🎣 Gallery (Catches)'  - label: '🎣 Gallery (Catches)'
-
-    name: 'catches'    name: 'catches'
-
-    label_singular: 'Catch Photo'    label_singular: 'Catch Photo'
-
-    folder: 'content/catches'    folder: 'content/catches'
-
-    create: true    create: true
-
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-
-    extension: 'json'    extension: 'json'
-
-    format: 'json'    format: 'json'
-
-    summary: '{{title}} • {{angler}} • {{species}}'    summary: '{{title}} • {{angler}} • {{species}}'
-
-    sortable_fields: ['title', 'angler', 'date', 'featured']    sortable_fields: ['title', 'angler', 'date', 'featured']
-
-    view_filters:    view_filters:
-
-      - label: Featured Only      - label: Featured Only
-
-        field: featured        field: featured
-
-        pattern: true        pattern: true
-
-      - label: Published      - label: Published
-
-        field: status        field: status
-
-        pattern: 'published'        pattern: 'published'
-
-    fields:    fields:
-
-      # Basic Information      # STEP 1: Basic Info
-
-      - {      - label: '📝 Basic Information'
-
-          label: '🆔 ID (auto-generated, leave as-is)',        name: 'basic_info_section'
-
-          name: 'id',        widget: 'object'
-
-          widget: 'string',        collapsed: false
-
-          required: false,        fields:
-
-          hint: 'Auto-generated from date and title. Edit only if needed.',          - {
-
-          pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']              label: 'Auto ID (leave as-is)',
-
-        }              name: 'id',
-
-      - {              widget: 'string',
-
-          label: '📝 Photo Title/Caption',              required: false,
-
-          name: 'title',              hint: 'Auto-generated from date and title. You can edit if needed.',
-
-          widget: 'string',              pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']
-
-          hint: 'Example: "Dan''s 5lb Largemouth Bass" or "Big Pike on Crankbait"'            }
-
-        }          - {
-
-      - {              label: 'Photo Title/Caption',
-
-          label: '📅 When was it caught?',              name: 'title',
-
-          name: 'date',              widget: 'string',
-
-          widget: 'datetime',              hint: 'Example: "Dan\'s 5lb Largemouth Bass" or "Big Pike on Crankbait"'
-
-          default: '',            }
-
-          date_format: 'MM/DD/YYYY',          - {
-
-          time_format: false,              label: 'When was it caught?',
-
-          required: false,              name: 'date',
-
-          hint: 'Select the catch date'              widget: 'datetime',
-
-        }              default: '',
-
-      - {              date_format: 'MM/DD/YYYY',
-
-          label: '🎣 Angler Name',              time_format: false,
-
-          name: 'angler',              required: false
-
-          widget: 'string',            }
-
-          required: false,
-
-          hint: 'Who caught it? Give credit to the angler!'      # STEP 2: Catch Details
-
-        }      - label: '🐟 Catch Details'
-
-      - {        name: 'catch_details_section'
-
-          label: '🐟 Fish Species',        widget: 'object'
-
-          name: 'species',        collapsed: false
-
-          widget: 'select',        fields:
-
-          required: false,          - {
-
-          options:              label: 'Angler Name',
-
-            [              name: 'angler',
-
-              'Largemouth Bass',              widget: 'string',
-
-              'Smallmouth Bass',              required: false,
-
-              'Spotted Bass',              hint: 'Who caught it? Give credit!'
-
-              'Striped Bass',            }
-
-              'Pike',          - {
-
-              'Muskie',              label: 'Fish Species',
-
-              'Walleye',              name: 'species',
-
-              'Crappie',              widget: 'select',
-
-              'Bluegill',              required: false,
-
-              'Trout',              options:
-
-              'Catfish',                [
-
-              'Redfish',                  'Largemouth Bass',
-
-              'Snook',                  'Smallmouth Bass',
-
-              'Tarpon',                  'Spotted Bass',
-
-              'Other'                  'Striped Bass',
-
-            ],                  'Pike',
-
-          hint: 'Select the type of fish from dropdown'                  'Muskie',
-
-        }                  'Walleye',
-
-      - {                  'Crappie',
-
-          label: '📍 Location',                  'Bluegill',
-
-          name: 'location',                  'Trout',
-
-          widget: 'string',                  'Catfish',
-
-          required: false,                  'Redfish',
-
-          hint: 'Example: "Lake Michigan" or "St. Lawrence River"'                  'Snook',
-
-        }                  'Tarpon',
-
-      - {                  'Other'
-
-          label: '📏 Length (inches)',                ],
-
-          name: 'lengthIn',              hint: 'Select the type of fish'
-
-          widget: 'number',            }
-
-          required: false,          - {
-
-          min: 0,              label: 'Location',
-
-          max: 100,              name: 'location',
-
-          step: 0.5,              widget: 'string',
-
-          value_type: 'float',              required: false,
-
-          hint: 'Fish length in inches'              hint: 'Example: "Lake Michigan" or "St. Lawrence River"'
-
-        }            }
-
-      - {          - {
-
-          label: '⚖️ Weight (pounds)',              label: 'Length (inches)',
-
-          name: 'weightLb',              name: 'lengthIn',
-
-          widget: 'number',              widget: 'number',
-
-          required: false,              required: false,
-
-          min: 0,              min: 0,
-
-          max: 100,              max: 100,
-
-          step: 0.1,              step: 0.5,
-
-          value_type: 'float',              value_type: 'float'
-
-          hint: 'Fish weight in pounds'            }
-
-        }          - {
-
-      - label: '🎣 Which Lure Was Used?'              label: 'Weight (pounds)',
-
-        name: 'lureId'              name: 'weightLb',
-
-        widget: 'relation'              widget: 'number',
-
-        collection: 'products'              required: false,
-
-        search_fields: ['name', 'id']              min: 0,
-
-        value_field: 'id'              max: 100,
-
-        display_fields: ['name', 'category']              step: 0.1,
-
-        required: false              value_type: 'float'
-
-        hint: 'Link this catch to a product - helps visitors find the lure!'            }
-
-      - label: '📸 Photos'
-
-        name: 'images'      # STEP 3: Lure Used
-
-        widget: 'list'      - label: '🎣 Which Lure?'
-
-        collapsed: false        name: 'lure_section'
-
-        minimize_collapsed: true        widget: 'object'
-
-        summary: '{{fields.alt}}'        collapsed: false
-
-        hint: 'Upload 1-5 photos. First photo is the thumbnail.'        fields:
-
-        fields:          - label: 'Lure Used'
-
-          - { label: 'Photo', name: 'src', widget: 'image' }            name: 'lureId'
-
-          - {            widget: 'relation'
-
-              label: 'Photo Description (Alt Text)',            collection: 'products'
-
-              name: 'alt',            search_fields: ['name', 'id']
-
-              widget: 'string',            value_field: 'id'
-
-              required: false,            display_fields: ['name', 'category']
-
-              hint: 'Describe the photo for accessibility'            required: false
-
-            }            hint: 'Link this catch to a product (helps visitors find the lure!)'
-
-      - {
-
-          label: '🏷️ Tags',      # STEP 4: Photos
-
-          name: 'tags',      - label: '📸 Photos'
-
-          widget: 'list',        name: 'images'
-
-          required: false,        widget: 'list'
-
-          hint: 'Keywords for filtering (e.g., summer, trophy, bass)'        collapsed: false
-
-        }        minimize_collapsed: true
-
-      - {        summary: '{{fields.alt}}'
-
-          label: '⭐ Featured',        hint: 'Upload 1-5 photos. First photo is the thumbnail.'
-
-          name: 'featured',        fields:
-
-          widget: 'boolean',          - { label: 'Photo', name: 'src', widget: 'image' }
-
-          default: false,          - {
-
-          required: false,              label: 'Photo Description (Alt Text)',
-
-          hint: 'Highlight this catch at the top of gallery'              name: 'alt',
-
-        }              widget: 'string',
-
-      - {              required: false,
-
-          label: '📊 Status',              hint: 'Describe the photo for accessibility'
-
-          name: 'status',            }
-
-          widget: 'select',
-
-          options:      # STEP 5: Publishing Options (Collapsed by default)
-
-            [      - label: '⚙️ Publishing Options'
-
-              { label: '✏️ Draft (not visible)', value: 'draft' },        name: 'publishing_section'
-
-              { label: '✅ Published (visible)', value: 'published' }        widget: 'object'
-
-            ],        collapsed: true
-
-          default: 'draft',        fields:
-
-          hint: 'Set to Published when ready to show on site'          - {
-
-        }              label: 'Status',
-
-      - {              name: 'status',
-
-          label: '🔢 Sort Order',              widget: 'select',
-
-          name: 'sort',              options:
-
-          widget: 'number',                [
-
-          required: false,                  { label: '✏️ Draft (not visible)', value: 'draft' },
-
-          hint: 'Lower numbers appear first (leave blank for auto-sort by date)'                  { label: '✅ Published (visible)', value: 'published' }
-
-        }                ],
-
-      - {              default: 'draft',
-
-          label: '📅 Publish Date',              hint: 'Set to Published when ready to show on site'
-
-          name: 'publishedAt',            }
-
-          widget: 'datetime',          - {
-
-          required: false,              label: '⭐ Featured',
-
-          hint: 'Optional: Set specific publish date/time'              name: 'featured',
-
-        }              widget: 'boolean',
-
-              default: false,
-
-  # ========================================              required: false,
-
-  # PRODUCTS - Lure Catalog              hint: 'Highlight this catch at the top of gallery'
-
-  # ========================================            }
-
-  - label: '🎣 Products (Lures)'          - {
-
-    name: 'products'              label: 'Sort Order',
-
-    label_singular: 'Product'              name: 'sort',
-
-    folder: 'content/products'              widget: 'number',
-
-    create: true              required: false,
-
-    slug: '{{slug}}'              hint: 'Lower numbers appear first (leave blank for auto-sort by date)'
-
-    extension: 'json'            }
-
-    format: 'json'          - {
-
-    summary: '{{name}} • {{category}}'              label: 'Tags',
-
-    sortable_fields: ['name', 'category', 'featured', 'sort']              name: 'tags',
-
-    view_filters:              widget: 'list',
-
-      - label: Featured Only              required: false,
-
-        field: featured              hint: 'Keywords for filtering (e.g., summer, trophy, bass)'
-
-        pattern: true            }
-
-      - label: Active Products          - {
-
-        field: status              label: 'Publish Date',
-
-        pattern: 'active'              name: 'publishedAt',
-
-      - label: By Category              widget: 'datetime',
-
-        field: category              required: false,
-
-        pattern: ''              hint: 'Optional: Set specific publish date/time'
-
-    fields:            }
-
-      - {
-
-          label: '🆔 Product ID',  # ========================================
-
-          name: 'id',  # PRODUCTS - Lure Catalog
-
-          widget: 'string',  # ========================================
-
-          hint: 'Short code (e.g., sb-001, crank-blue). Cannot change after creation!',  - label: '🎣 Products (Lures)'
-
-          pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']    name: 'products'
-
-        }    label_singular: 'Product'
-
-      - {    folder: 'content/products'
-
-          label: '📝 Product Name',    create: true
-
-          name: 'name',    slug: '{{slug}}'
-
-          widget: 'string',    extension: 'json'
-
-          hint: 'Example: "River Shimmer Spinnerbait" or "Deep Dive Crankbait"'    format: 'json'
-
-        }    summary: '{{name}} • {{category}}'
-
-      - {    sortable_fields: ['name', 'category', 'featured', 'sort']
-
-          label: '📄 Description',    view_filters:
-
-          name: 'description',      - label: Featured Only
-
-          widget: 'text',        field: featured
-
-          hint: 'Describe the lure, how it works, best conditions, target species (20+ characters)',        pattern: true
-
-          pattern: ['^.{20,}$', 'Please write at least 20 characters']      - label: Active Products
-
-        }        field: status
-
-      - {        pattern: 'active'
-
-          label: '🗂️ Category',      - label: By Category
-
-          name: 'category',        field: category
-
-          widget: 'select',        pattern: ''
-
-          options:    fields:
-
-            [      # STEP 1: Basic Product Info
-
-              { label: '🌀 Spinnerbait', value: 'spinnerbait' },      - label: '📝 Basic Product Info'
-
-              { label: '🪝 Jig', value: 'jig' },        name: 'basic_section'
-
-              { label: '🐠 Crankbait', value: 'crankbait' },        widget: 'object'
-
-              { label: '🌊 Topwater', value: 'topwater' },        collapsed: false
-
-              { label: '🪱 Soft Plastic', value: 'soft-plastic' }        fields:
-
-            ],          - {
-
-          hint: 'What type of lure is this?'              label: 'Product ID',
-
-        }              name: 'id',
-
-      - label: '📸 Product Photos'              widget: 'string',
-
-        name: 'images'              hint: 'Short code (e.g., sb-001, crank-blue). Cannot change after creation!',
-
-        widget: 'list'              pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens only']
-
-        collapsed: false            }
-
-        minimize_collapsed: true          - {
-
-        summary: 'Photo {{index}}'              label: 'Product Name',
-
-        hint: 'Upload 1-5 product photos. First photo is main image.'              name: 'name',
-
-        field: { label: 'Image', name: 'src', widget: 'image' }              widget: 'string',
-
-      - label: '🎨 Variants (Sizes/Colors/Weights)'              hint: 'Example: "River Shimmer Spinnerbait" or "Deep Dive Crankbait"'
-
-        name: 'variants'            }
-
-        widget: 'list'          - {
-
-        collapsed: false              label: 'Category',
-
-        minimize_collapsed: true              name: 'category',
-
-        summary: '{{fields.label}} • ${{fields.price}}'              widget: 'select',
-
-        hint: 'Add different options: sizes, colors, weights, etc.'              options:
-
-        fields:                [
-
-          - {                  { label: '🌀 Spinnerbait', value: 'spinnerbait' },
-
-              label: 'Variant ID',                  { label: '🪝 Jig', value: 'jig' },
-
-              name: 'id',                  { label: '🐠 Crankbait', value: 'crankbait' },
-
-              widget: 'string',                  { label: '🌊 Topwater', value: 'topwater' },
-
-              hint: 'Internal code (e.g., v1, 3-8oz-chart, blue-sm)',                  { label: '🪱 Soft Plastic', value: 'soft-plastic' }
-
-              pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens']                ],
-
-            }              hint: 'What type of lure is this?'
-
-          - label: 'Variant Label (What customer sees)'            }
-
-            name: 'label'
-
-            widget: 'select'      # STEP 2: Description
-
-            options:      - {
-
-              # Weight options          label: '📄 Description',
-
-              - { label: '1/8 oz', value: '1/8 oz' }          name: 'description',
-
-              - { label: '1/4 oz', value: '1/4 oz' }          widget: 'text',
-
-              - { label: '3/8 oz', value: '3/8 oz' }          hint: 'Describe the lure, how it works, best conditions, target species, etc.',
-
-              - { label: '1/2 oz', value: '1/2 oz' }          pattern: ['^.{20,}$', 'Please write at least 20 characters']
-
-              - { label: '3/4 oz', value: '3/4 oz' }        }
-
-              - { label: '1 oz', value: '1 oz' }
-
-              # Color options      # STEP 3: Photos
-
-              - { label: 'Chartreuse', value: 'Chartreuse' }      - label: '📸 Product Photos'
-
-              - { label: 'White', value: 'White' }        name: 'images'
-
-              - { label: 'Black', value: 'Black' }        widget: 'list'
-
-              - { label: 'Blue', value: 'Blue' }        collapsed: false
-
-              - { label: 'Silver', value: 'Silver' }        minimize_collapsed: true
-
-              - { label: 'Gold', value: 'Gold' }        summary: 'Photo {{index}}'
-
-              - { label: 'Red', value: 'Red' }        hint: 'Upload 1-5 product photos. First photo is main image.'
-
-              - { label: 'Green', value: 'Green' }        field: { label: 'Image', name: 'src', widget: 'image' }
-
-              - { label: 'Purple', value: 'Purple' }
-
-              - { label: 'Brown/Orange', value: 'Brown/Orange' }      # STEP 4: Variants (Sizes/Colors)
-
-              - { label: 'Natural Shad', value: 'Natural Shad' }      - label: '🎨 Variants (Sizes/Colors/Weights)'
-
-              - { label: 'Fire Tiger', value: 'Fire Tiger' }        name: 'variants'
-
-              # Combo options        widget: 'list'
-
-              - { label: '1/8 oz • Chartreuse', value: '1/8 oz • Chartreuse' }        collapsed: false
-
-              - { label: '1/4 oz • Chartreuse', value: '1/4 oz • Chartreuse' }        minimize_collapsed: true
-
-              - { label: '3/8 oz • Chartreuse', value: '3/8 oz • Chartreuse' }        summary: '{{fields.label}} • ${{fields.price}}'
-
-              - { label: '1/2 oz • Chartreuse', value: '1/2 oz • Chartreuse' }        hint: 'Add different options: sizes, colors, weights, etc.'
-
-              - { label: '1/8 oz • White', value: '1/8 oz • White' }        fields:
-
-              - { label: '1/4 oz • White', value: '1/4 oz • White' }          - {
-
-              - { label: '3/8 oz • White', value: '3/8 oz • White' }              label: 'Variant ID',
-
-              - { label: '1/2 oz • White', value: '1/2 oz • White' }              name: 'id',
-
-              - { label: 'Custom Option', value: 'Custom' }              widget: 'string',
-
-            allow_add: true              hint: 'Internal code (e.g., v1, 3-8oz-chart, blue-sm)',
-
-            hint: 'Select from dropdown or type custom (e.g., "3/8 oz • Chartreuse" or just "Blue")'              pattern: ['^[a-z0-9-]+$', 'Use lowercase letters, numbers, and hyphens']
-
-          - {            }
-
-              label: 'SKU (your inventory code)',          - label: 'Variant Label (What customer sees)'
-
-              name: 'sku',            name: 'label'
-
-              widget: 'string',            widget: 'select'
-
-              hint: 'Your internal product code'            options:
-
-            }              # Weight options
-
-          - {              - { label: '1/8 oz', value: '1/8 oz' }
-
-              label: 'Price (USD)',              - { label: '1/4 oz', value: '1/4 oz' }
-
-              name: 'price',              - { label: '3/8 oz', value: '3/8 oz' }
-
-              widget: 'number',              - { label: '1/2 oz', value: '1/2 oz' }
-
-              required: false,              - { label: '3/4 oz', value: '3/4 oz' }
-
-              min: 0,              - { label: '1 oz', value: '1 oz' }
-
-              step: 0.01,              # Color options
-
-              value_type: 'float',              - { label: 'Chartreuse', value: 'Chartreuse' }
-
-              hint: 'Display price. Example: 12.99'              - { label: 'White', value: 'White' }
-
-            }              - { label: 'Black', value: 'Black' }
-
-          - {              - { label: 'Blue', value: 'Blue' }
-
-              label: 'Stripe Price ID',              - { label: 'Silver', value: 'Silver' }
-
-              name: 'stripePriceId',              - { label: 'Gold', value: 'Gold' }
-
-              widget: 'string',              - { label: 'Red', value: 'Red' }
-
-              required: false,              - { label: 'Green', value: 'Green' }
-
-              hint: 'Leave blank until checkout is enabled'              - { label: 'Purple', value: 'Purple' }
-
-            }              - { label: 'Brown/Orange', value: 'Brown/Orange' }
-
-      - {              - { label: 'Natural Shad', value: 'Natural Shad' }
-
-          label: '🏷️ Tags',              - { label: 'Fire Tiger', value: 'Fire Tiger' }
-
-          name: 'tags',              # Combo options
-
-          widget: 'list',              - { label: '1/8 oz • Chartreuse', value: '1/8 oz • Chartreuse' }
-
-          required: false,              - { label: '1/4 oz • Chartreuse', value: '1/4 oz • Chartreuse' }
-
-          hint: 'Keywords for search/filtering (e.g., bass, deep-water, slow-roll)'              - { label: '3/8 oz • Chartreuse', value: '3/8 oz • Chartreuse' }
-
-        }              - { label: '1/2 oz • Chartreuse', value: '1/2 oz • Chartreuse' }
-
-      - {              - { label: '1/8 oz • White', value: '1/8 oz • White' }
-
-          label: '⭐ Featured',              - { label: '1/4 oz • White', value: '1/4 oz • White' }
-
-          name: 'featured',              - { label: '3/8 oz • White', value: '3/8 oz • White' }
-
-          widget: 'boolean',              - { label: '1/2 oz • White', value: '1/2 oz • White' }
-
-          default: false,              - { label: 'Custom Option', value: 'Custom' }
-
-          required: false,            allow_add: true
-
-          hint: 'Highlight this product on homepage'            hint: 'Example: "3/8 oz • Chartreuse" or just "Blue". Can type custom option.'
-
-        }          - {
-
-      - {              label: 'SKU (your inventory code)',
-
-          label: '📊 Status',              name: 'sku',
-
-          name: 'status',              widget: 'string',
-
-          widget: 'select',              hint: 'Your internal product code'
-
-          options:            }
-
-            [          - {
-
-              { label: '✏️ Draft (not public)', value: 'draft' },              label: 'Price (USD)',
-
-              { label: '✅ Active (visible on site)', value: 'active' },              name: 'price',
-
-              { label: '👁️ Hidden (not listed)', value: 'hidden' }              widget: 'number',
-
-            ],              required: false,
-
-          default: 'draft',              min: 0,
-
-          required: false,              step: 0.01,
-
-          hint: 'Control visibility: Draft = work in progress, Active = live, Hidden = keep but don''t list'              value_type: 'float',
-
-        }              hint: 'Display price. Example: 12.99'
-
-      - {            }
-
-          label: '🔢 Sort Order',          - {
-
-          name: 'sort',              label: 'Stripe Price ID',
-
-          widget: 'number',              name: 'stripePriceId',
-
-          required: false,              widget: 'string',
-
-          hint: 'Lower numbers appear first (leave blank for auto-sort)'              required: false,
-
-        }              hint: 'Leave blank until checkout is enabled'
-
-      - {            }
-
-          label: '📅 Publish Date',
-
-          name: 'publishedAt',      # STEP 5: Publishing Options (Collapsed)
-
-          widget: 'datetime',      - label: '⚙️ Publishing Options'
-
-          required: false,        name: 'publishing_section'
-
-          hint: 'Optional: Set when product was added'        widget: 'object'
-
-        }        collapsed: true
-
+backend:
+  name: github
+  repo: CDLBuddy/fishing-lure-site
+  branch: main
+  base_url: https://fishing-lure-site.vercel.app
+  auth_endpoint: /api/auth
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+publish_mode: editorial_workflow
+
+editor:
+  preview: true
+
+preview_styles:
+  - /admin/preview.css
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+
+collections:
+  - label: "Gallery (Catches)"
+    name: "catches"
+    label_singular: "Catch Photo"
+    folder: "content/catches"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "json"
+    format: "json"
+    summary: "{{title}}  {{angler}}  {{species}}"
+    sortable_fields: ["title", "angler", "date", "featured"]
+    view_filters:
+      - label: Featured Only
+        field: featured
+        pattern: true
+      - label: Published
+        field: status
+        pattern: "published"
+    fields:
+      - label: "ID (auto-generated)"
+        name: "id"
+        widget: "string"
+        required: false
+        hint: "Auto-generated from date and title"
+        pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens only"]
+      - label: "Photo Title/Caption"
+        name: "title"
+        widget: "string"
+        hint: "Example: Dan's 5lb Largemouth Bass"
+      - label: "When was it caught?"
+        name: "date"
+        widget: "datetime"
+        default: ""
+        date_format: "MM/DD/YYYY"
+        time_format: false
+        required: false
+      - label: "Angler Name"
+        name: "angler"
+        widget: "string"
+        required: false
+        hint: "Who caught it?"
+      - label: "Fish Species"
+        name: "species"
+        widget: "select"
+        required: false
+        options:
+          - "Largemouth Bass"
+          - "Smallmouth Bass"
+          - "Spotted Bass"
+          - "Striped Bass"
+          - "Pike"
+          - "Muskie"
+          - "Walleye"
+          - "Crappie"
+          - "Bluegill"
+          - "Trout"
+          - "Catfish"
+          - "Redfish"
+          - "Snook"
+          - "Tarpon"
+          - "Other"
+      - label: "Location"
+        name: "location"
+        widget: "string"
+        required: false
+        hint: "Example: Lake Michigan"
+      - label: "Length (inches)"
+        name: "lengthIn"
+        widget: "number"
+        required: false
+        min: 0
+        max: 100
+        step: 0.5
+        value_type: "float"
+      - label: "Weight (pounds)"
+        name: "weightLb"
+        widget: "number"
+        required: false
+        min: 0
+        max: 100
+        step: 0.1
+        value_type: "float"
+      - label: "Which Lure Was Used?"
+        name: "lureId"
+        widget: "relation"
+        collection: "products"
+        search_fields: ["name", "id"]
+        value_field: "id"
+        display_fields: ["name", "category"]
+        required: false
+      - label: "Photos"
+        name: "images"
+        widget: "list"
+        collapsed: false
+        summary: "{{fields.alt}}"
+        hint: "Upload 1-5 photos"
         fields:
-          - {
-              label: 'Status',
-              name: 'status',
-              widget: 'select',
-              options:
-                [
-                  { label: '✏️ Draft (not public)', value: 'draft' },
-                  { label: '✅ Active (visible on site)', value: 'active' },
-                  { label: '👁️ Hidden (not listed)', value: 'hidden' }
-                ],
-              default: 'draft',
-              required: false,
-              hint: 'Control visibility: Draft = work in progress, Active = live, Hidden = keep but don\'t list'
-            }
-          - {
-              label: '⭐ Featured',
-              name: 'featured',
-              widget: 'boolean',
-              default: false,
-              required: false,
-              hint: 'Highlight this product on homepage'
-            }
-          - {
-              label: 'Sort Order',
-              name: 'sort',
-              widget: 'number',
-              required: false,
-              hint: 'Lower numbers appear first (leave blank for auto-sort)'
-            }
-          - {
-              label: 'Tags',
-              name: 'tags',
-              widget: 'list',
-              required: false,
-              hint: 'Keywords for search/filtering (e.g., bass, deep-water, slow-roll)'
-            }
-          - {
-              label: 'Publish Date',
-              name: 'publishedAt',
-              widget: 'datetime',
-              required: false,
-              hint: 'Optional: Set when product was added'
-            }
+          - label: "Photo"
+            name: "src"
+            widget: "image"
+          - label: "Description"
+            name: "alt"
+            widget: "string"
+            required: false
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options:
+          - label: "Draft"
+            value: "draft"
+          - label: "Published"
+            value: "published"
+        default: "draft"
+      - label: "Sort Order"
+        name: "sort"
+        widget: "number"
+        required: false
+      - label: "Publish Date"
+        name: "publishedAt"
+        widget: "datetime"
+        required: false
+
+  - label: "Products (Lures)"
+    name: "products"
+    label_singular: "Product"
+    folder: "content/products"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    summary: "{{name}} • {{category}}"
+    sortable_fields: ["name", "category", "featured", "sort"]
+    view_filters:
+      - label: Featured Only
+        field: featured
+        pattern: true
+      - label: Active Products
+        field: status
+        pattern: "active"
+    fields:
+      - label: "Product ID"
+        name: "id"
+        widget: "string"
+        hint: "Short code (e.g., sb-001, crank-blue)"
+        pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens only"]
+      - label: "Product Name"
+        name: "name"
+        widget: "string"
+        hint: "Example: River Shimmer Spinnerbait"
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        hint: "Describe the lure, how it works, best conditions"
+        pattern: ["^.{20,}$", "Please write at least 20 characters"]
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - label: "Spinnerbait"
+            value: "spinnerbait"
+          - label: "Jig"
+            value: "jig"
+          - label: "Crankbait"
+            value: "crankbait"
+          - label: "Topwater"
+            value: "topwater"
+          - label: "Soft Plastic"
+            value: "soft-plastic"
+      - label: "Product Photos"
+        name: "images"
+        widget: "list"
+        collapsed: false
+        summary: "Photo {{index}}"
+        hint: "Upload 1-5 product photos"
+        field:
+          label: "Image"
+          name: "src"
+          widget: "image"
+      - label: "Variants (Sizes/Colors/Weights)"
+        name: "variants"
+        widget: "list"
+        collapsed: false
+        summary: "{{fields.label}} • ${{fields.price}}"
+        hint: "Add different options"
+        fields:
+          - label: "Variant ID"
+            name: "id"
+            widget: "string"
+            hint: "Internal code (e.g., v1, 3-8oz-chart)"
+            pattern: ["^[a-z0-9-]+$", "Use lowercase letters, numbers, and hyphens"]
+          - label: "Variant Label"
+            name: "label"
+            widget: "select"
+            options:
+              - label: "1/8 oz"
+                value: "1/8 oz"
+              - label: "1/4 oz"
+                value: "1/4 oz"
+              - label: "3/8 oz"
+                value: "3/8 oz"
+              - label: "1/2 oz"
+                value: "1/2 oz"
+              - label: "3/4 oz"
+                value: "3/4 oz"
+              - label: "1 oz"
+                value: "1 oz"
+              - label: "Chartreuse"
+                value: "Chartreuse"
+              - label: "White"
+                value: "White"
+              - label: "Black"
+                value: "Black"
+              - label: "Blue"
+                value: "Blue"
+              - label: "Silver"
+                value: "Silver"
+              - label: "Gold"
+                value: "Gold"
+              - label: "Red"
+                value: "Red"
+              - label: "Green"
+                value: "Green"
+              - label: "Purple"
+                value: "Purple"
+              - label: "Brown/Orange"
+                value: "Brown/Orange"
+              - label: "Natural Shad"
+                value: "Natural Shad"
+              - label: "Fire Tiger"
+                value: "Fire Tiger"
+              - label: "1/8 oz • Chartreuse"
+                value: "1/8 oz • Chartreuse"
+              - label: "1/4 oz • Chartreuse"
+                value: "1/4 oz • Chartreuse"
+              - label: "3/8 oz • Chartreuse"
+                value: "3/8 oz • Chartreuse"
+              - label: "1/2 oz • Chartreuse"
+                value: "1/2 oz • Chartreuse"
+              - label: "1/8 oz • White"
+                value: "1/8 oz • White"
+              - label: "1/4 oz • White"
+                value: "1/4 oz • White"
+              - label: "3/8 oz • White"
+                value: "3/8 oz • White"
+              - label: "1/2 oz • White"
+                value: "1/2 oz • White"
+              - label: "Custom Option"
+                value: "Custom"
+            allow_add: true
+            hint: "Select from dropdown or type custom"
+          - label: "SKU"
+            name: "sku"
+            widget: "string"
+            hint: "Your inventory code"
+          - label: "Price (USD)"
+            name: "price"
+            widget: "number"
+            required: false
+            min: 0
+            step: 0.01
+            value_type: "float"
+            hint: "Display price. Example: 12.99"
+          - label: "Stripe Price ID"
+            name: "stripePriceId"
+            widget: "string"
+            required: false
+            hint: "Leave blank until checkout enabled"
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        hint: "Keywords for search/filtering"
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        required: false
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options:
+          - label: "Draft"
+            value: "draft"
+          - label: "Active"
+            value: "active"
+          - label: "Hidden"
+            value: "hidden"
+        default: "draft"
+        required: false
+      - label: "Sort Order"
+        name: "sort"
+        widget: "number"
+        required: false
+      - label: "Publish Date"
+        name: "publishedAt"
+        widget: "datetime"
+        required: false
