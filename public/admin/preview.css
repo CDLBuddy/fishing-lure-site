@@ -315,6 +315,228 @@ body::before {
   z-index: 1000;
 }
 
+/* ========================================
+   CMS EDITOR FORM STYLING
+   Visual grouping for flat field structure
+   ======================================== */
+
+/* Add spacing and dividers between logical field groups */
+
+/* Basic Info Group - ID, Title, Date, Angler */
+[data-field-name="id"] {
+  position: relative;
+  padding-top: 2rem !important;
+}
+[data-field-name="id"]::before {
+  content: "📋 BASIC INFORMATION";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+/* Catch Details Group - Species, Location, Length, Weight */
+[data-field-name="species"] {
+  position: relative;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+[data-field-name="species"]::before {
+  content: "🐟 CATCH DETAILS";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+/* Lure Section */
+[data-field-name="lureId"] {
+  position: relative;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+[data-field-name="lureId"]::before {
+  content: "🎣 LURE USED";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+/* Photos Section */
+[data-field-name="images"] {
+  position: relative;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+[data-field-name="images"]::before {
+  content: "📸 PHOTOS";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+/* Publishing Options - Tags, Featured, Status, etc. */
+[data-field-name="tags"] {
+  position: relative;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+[data-field-name="tags"]::before {
+  content: "⚙️ PUBLISHING OPTIONS";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+/* Product Basic Info - For Products collection */
+[data-field-name="name"] {
+  position: relative;
+  padding-top: 2rem !important;
+}
+[data-field-name="name"]::before {
+  content: "📋 PRODUCT INFORMATION";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+/* Product Variants Section */
+[data-field-name="variants"] {
+  position: relative;
+  margin-top: 2rem !important;
+  padding-top: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+[data-field-name="variants"]::before {
+  content: "🎨 VARIANTS (SIZES/COLORS)";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--brand);
+  text-transform: uppercase;
+}
+
+/* Enhance form fields */
+.nc-controlPane-control {
+  margin-bottom: 1.5rem;
+}
+
+/* Add subtle background to field groups */
+[data-field-name="id"],
+[data-field-name="species"],
+[data-field-name="lureId"],
+[data-field-name="images"],
+[data-field-name="tags"],
+[data-field-name="name"],
+[data-field-name="variants"] {
+  background: var(--bg-elevated);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+/* Highlight required fields */
+.nc-controlPane-control[required] label::after {
+  content: " *";
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* Make dropdown selects more prominent */
+select {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+select:focus {
+  border-color: var(--brand);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 157, 217, 0.1);
+}
+
+/* Style list widgets (images, tags, variants) */
+.nc-listControl-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.nc-listControl-item:hover {
+  border-color: var(--brand);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* Improve button styling */
+button[type="button"],
+.nc-widgetButton-button {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button[type="button"]:hover,
+.nc-widgetButton-button:hover {
+  background: var(--brand-dim);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
 /* Print styles */
 @media print {
   body {
