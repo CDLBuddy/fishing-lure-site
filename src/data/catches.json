@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "id": "2025-10-12-dans-5lb-largemouth-bass",
+    "title": "Dan's 5lb Largemouth Bass",
+    "date": "06/11/2025",
+    "angler": "Dan M.",
+    "location": "Lake Michigan",
+    "species": "Largemouth Bass",
+    "lengthIn": 8.5,
+    "weightLb": 6,
+    "tags": [],
+    "images": [
+      {
+        "src": "https://assets.wired2fish.com/uploads/2023/06/shore-fishing-bass.webp"
+      }
+    ],
+    "status": "published",
+    "featured": false,
+    "publishedAt": "2025-10-11T22:56:00.000-04:00"
+  }
+]

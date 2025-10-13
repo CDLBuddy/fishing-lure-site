@@ -26,8 +26,10 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
-import { Potrace, Posterize } from 'node-potrace'
+import potracePkg from 'potrace'
 import { optimize } from 'svgo'
+
+const { Potrace, Posterizer } = potracePkg
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
@@ -51,7 +53,14 @@ const TARGET_W = 1200
 const log = (...a) => console.log('[logo]', ...a)
 const warn = (...a) => console.warn('[logo]', ...a)
 
-async function exists(p) { try { await fs.stat(p); return true } catch { return false } }
+async function exists(p) {
+  try {
+    await fs.stat(p)
+    return true
+  } catch {
+    return false
+  }
+}
 
 function svgo(svg) {
   const { data } = optimize(svg, {
@@ -59,8 +68,8 @@ function svgo(svg) {
     plugins: [
       { name: 'preset-default', params: { overrides: { removeViewBox: false } } },
       'convertStyleToAttrs',
-      'removeDimensions'
-    ]
+      'removeDimensions',
+    ],
   })
   return data
 }
@@ -124,13 +133,15 @@ async function maeAgainst(sourceBuf, candidateBuf) {
   return sum / sa.length / 255
 }
 
-function countPaths(svgStr) { return (svgStr.match(/<path\b/gi) || []).length }
+function countPaths(svgStr) {
+  return (svgStr.match(/<path\b/gi) || []).length
+}
 
 async function posterizeToSvg(opts) {
   return await new Promise((resolve, reject) => {
-    new Posterize(opts).loadImage(OUT_PNG2, function (err) {
+    new Posterizer(opts).loadImage(OUT_PNG2, function (err) {
       if (err) return reject(err)
-      this.getSVG((err2, svg) => err2 ? reject(err2) : resolve(svg))
+      this.getSVG((err2, svg) => (err2 ? reject(err2) : resolve(svg)))
     })
   })
 }
@@ -144,10 +155,10 @@ async function potraceMono(threshold) {
       optTolerance: 0.4,
       threshold,
       background: 'transparent',
-      color: '#000000'
+      color: '#000000',
     }).loadImage(OUT_PNG2, function (err) {
       if (err) return reject(err)
-      this.getSVG((err2, svg) => err2 ? reject(err2) : resolve(svg))
+      this.getSVG((err2, svg) => (err2 ? reject(err2) : resolve(svg)))
     })
   })
 }
@@ -159,13 +170,13 @@ async function buildColorSvg() {
     stepsList: [8, 10, 12, 14],
     thresholds: [160, 170, 180, 190, 200],
     turdSizes: [10, 18, 25],
-    optTols: [0.35, 0.45, 0.6]
+    optTols: [0.35, 0.45, 0.6],
   }
   const widen = {
     stepsList: [16, 18, 20],
     thresholds: [170, 180, 190],
     turdSizes: [12, 18, 24],
-    optTols: [0.3, 0.4, 0.5]
+    optTols: [0.3, 0.4, 0.5],
   }
 
   async function sweep(grid) {
@@ -174,16 +185,25 @@ async function buildColorSvg() {
       for (const threshold of grid.thresholds) {
         for (const turdSize of grid.turdSizes) {
           for (const optTolerance of grid.optTols) {
-            const rawSvg = await posterizeToSvg({ steps, threshold, turdSize, optTolerance, turnPolicy: 'minority' })
+            const rawSvg = await posterizeToSvg({
+              steps,
+              threshold,
+              turdSize,
+              optTolerance,
+              turnPolicy: 'minority',
+            })
             const svg = svgo(rawSvg)
             const png = await renderSvgToPng(svg, TARGET_W)
             const score = await maeAgainst(src1200, png)
             const paths = countPaths(svg)
             const size = Buffer.byteLength(svg)
             const cand = { svg, score, paths, size, steps, threshold, turdSize, optTolerance }
-            if (!best
-              || cand.score < best.score - 1e-6
-              || (Math.abs(cand.score - best.score) < 1e-6 && (cand.paths < best.paths || (cand.paths === best.paths && cand.size < best.size)))) {
+            if (
+              !best ||
+              cand.score < best.score - 1e-6 ||
+              (Math.abs(cand.score - best.score) < 1e-6 &&
+                (cand.paths < best.paths || (cand.paths === best.paths && cand.size < best.size)))
+            ) {
               best = cand
             }
           }
@@ -197,17 +217,23 @@ async function buildColorSvg() {
   if (best?.score > 0.065) {
     log(`color sweep widening (current error≈${best.score.toFixed(4)})`)
     const wider = await sweep(widen)
-    if (wider && (
-      wider.score < best.score - 1e-6 ||
-      (Math.abs(wider.score - best.score) < 1e-6 && (wider.paths < best.paths || wider.size < best.size))
-    )) {
+    if (
+      wider &&
+      (wider.score < best.score - 1e-6 ||
+        (Math.abs(wider.score - best.score) < 1e-6 &&
+          (wider.paths < best.paths || wider.size < best.size)))
+    ) {
       best = wider
     }
   }
 
   if (!best) throw new Error('Posterize sweep produced no candidates')
   await fs.writeFile(OUT_SVG, best.svg)
-  log(`✓ color svg -> ${path.basename(OUT_SVG)}  (steps=${best.steps}, thr=${best.threshold}, turd=${best.turdSize}, tol=${best.optTolerance}, err≈${best.score.toFixed(4)}, paths=${best.paths})`)
+  log(
+    `✓ color svg -> ${path.basename(OUT_SVG)}  (steps=${best.steps}, thr=${best.threshold}, turd=${
+      best.turdSize
+    }, tol=${best.optTolerance}, err≈${best.score.toFixed(4)}, paths=${best.paths})`
+  )
   return best
 }
 
@@ -223,14 +249,21 @@ async function buildMonoSvg() {
     const paths = countPaths(svg)
     const size = Buffer.byteLength(svg)
     const cand = { svg, score, paths, size, threshold }
-    if (!best
-      || cand.score < best.score - 1e-6
-      || (Math.abs(cand.score - best.score) < 1e-6 && (cand.paths < best.paths || cand.size < best.size))) {
+    if (
+      !best ||
+      cand.score < best.score - 1e-6 ||
+      (Math.abs(cand.score - best.score) < 1e-6 &&
+        (cand.paths < best.paths || cand.size < best.size))
+    ) {
       best = cand
     }
   }
   await fs.writeFile(OUT_SVG_MONO, best.svg)
-  log(`✓ mono svg -> ${path.basename(OUT_SVG_MONO)} (thr=${best.threshold}, err≈${best.score.toFixed(4)}, paths=${best.paths})`)
+  log(
+    `✓ mono svg -> ${path.basename(OUT_SVG_MONO)} (thr=${best.threshold}, err≈${best.score.toFixed(
+      4
+    )}, paths=${best.paths})`
+  )
   return best
 }
 
@@ -251,8 +284,14 @@ async function writePreview(colorBest, monoBest) {
 </style>
 <div class="wrap">
   <h1>Logo Preview</h1>
-  <div>Best color trace: <code>steps=${colorBest.steps}, threshold=${colorBest.threshold}, turdSize=${colorBest.turdSize}, optTolerance=${colorBest.optTolerance}, error≈${colorBest.score.toFixed(4)}</code></div>
-  <div>Best mono trace: <code>threshold=${monoBest.threshold}, error≈${monoBest.score.toFixed(4)}</code></div>
+  <div>Best color trace: <code>steps=${colorBest.steps}, threshold=${
+    colorBest.threshold
+  }, turdSize=${colorBest.turdSize}, optTolerance=${
+    colorBest.optTolerance
+  }, error≈${colorBest.score.toFixed(4)}</code></div>
+  <div>Best mono trace: <code>threshold=${monoBest.threshold}, error≈${monoBest.score.toFixed(
+    4
+  )}</code></div>
   <div class="grid">
     <div class="card"><h3>Source (normalized)</h3><img src="/images/logo-rip@2x.png" alt=""></div>
     <div class="card"><h3>Color SVG</h3><div class="plate"><img src="/images/logo-rip.svg" alt=""></div></div>
@@ -288,4 +327,7 @@ async function run() {
   }
 }
 
-run().catch(e => { console.error(e); process.exit(1) })
+run().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
