@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <title>Admin • RIP Custom Lures</title>
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
     <!-- Make all relative URLs resolve to /admin/... -->
     <base href="/admin/">
 
@@ -15,20 +16,53 @@
     <style>
       :root { color-scheme: light dark; }
       html, body { height: 100%; }
-      body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
-
-      .guide-btn {
-        position: fixed; top: 16px; right: 16px; z-index: 9999;
-        background: #0b1220; color: #fff; padding: 10px 14px; border-radius: 10px;
-        text-decoration: none; font-weight: 700; border: 1px solid rgba(255,255,255,0.12);
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
       }
+
+      /* ---------- Owner Guide button ---------- */
+      .guide-btn {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 9999;
+        background: #0b1220;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 6px 20px rgba(0,0,0,.35);
+        -webkit-tap-highlight-color: transparent;
+      }
+      .guide-btn:focus-visible { outline: 2px solid #70c2ff; outline-offset: 2px; }
+
+      /* On tablets/phones, move it to a floating FAB at the bottom-right */
+      @media (max-width: 900px) {
+        .guide-btn {
+          top: auto;
+          right: max(12px, env(safe-area-inset-right));
+          bottom: max(12px, env(safe-area-inset-bottom));
+          background: #0b1220e6;
+          backdrop-filter: blur(6px) saturate(120%);
+          border-radius: 999px;
+        }
+      }
+      /* On very small screens, show just an icon to avoid covering UI */
+      @media (max-width: 420px) {
+        .guide-btn { padding: 10px; width: 44px; height: 44px; display: grid; place-items: center; }
+        .guide-btn .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } /* Visually hidden, still accessible */
+        .guide-btn::before { content: "❓"; font-size: 18px; line-height: 1; }
+      }
+
+      /* ---------- Friendly fallback panel if CMS fails ---------- */
       .msg {
         position: fixed; inset: 0; display: grid; place-items: center; padding: 24px;
         color: #111; background: #fff;
       }
-      @media (prefers-color-scheme: dark) {
-        .msg { color: #e6edf3; background: #0b1220; }
-      }
+      @media (prefers-color-scheme: dark) { .msg { color: #e6edf3; background: #0b1220; } }
       .msg .card {
         max-width: 720px; padding: 20px; border-radius: 12px;
         border: 1px solid rgba(127,127,127,.25);
@@ -39,7 +73,10 @@
     </style>
   </head>
   <body>
-    <a class="guide-btn" href="/owner-guide.html" target="_blank" rel="noopener">Owner Guide ↗</a>
+    <a class="guide-btn" href="/owner-guide.html" target="_blank" rel="noopener">
+      <span class="label">Owner Guide ↗</span>
+    </a>
+
     <noscript>
       <div class="msg"><div class="card">
         <h1>Enable JavaScript</h1>
@@ -49,7 +86,6 @@
 
     <script>
       (function () {
-        // Friendly error panel
         const showError = (title, detail) => {
           const wrap = document.createElement('div');
           wrap.className = 'msg';
@@ -62,22 +98,19 @@
           document.body.appendChild(wrap);
         };
 
-        // Boot Decap with explicit config path and preview styles
         const boot = () => {
           try {
             CMS.init({ load_config_file: true, config_path: 'config.yml' });
-
-            // Load your site theme into the preview iframe so it looks identical to production
+            /* Match site look inside the preview pane */
             CMS.registerPreviewStyle('/styles/tokens.css');
             CMS.registerPreviewStyle('/styles/base.css');
-            // CMS-only preview tweaks
             CMS.registerPreviewStyle('/admin/preview.css');
           } catch (e) {
             showError('Admin failed to start', e?.message || 'Unknown error');
           }
         };
 
-        // Wait for Decap to be ready
+        // Wait for the CMS global to be present, then init
         let tries = 0;
         const tick = setInterval(() => {
           tries++;
