@@ -1,52 +1,55 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1"
-    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>RIP Custom Lures</title>
-    <meta name="description" content="Custom, hand-made fishing lures by RIP Custom Lures." />
+    <meta
+      name="description"
+      content="Custom-crafted fishing lures from the Ozarks -- built to be fished, not framed. Browse spinnerbaits, jigs, topwater, and see real catches in the gallery."
+    />
 
-    <!-- Favicons / theming -->
-    <link rel="icon" href="/images/logo-rip.png">
-    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f7fafc" media="(prefers-color-scheme: light)" />
+    <!-- Dark-first theming (matches tokens.css) -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a1220" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f8fc" />
 
-    <!-- Open Graph / Twitter -->
+    <!-- Favicons / icons (re-use PNG for now; swap to SVG mono when available) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-rip.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-rip.png" />
+    <link rel="apple-touch-icon" href="/images/logo-rip.png" />
+    <!-- <link rel="mask-icon" href="/images/logo-rip-mono.svg" color="#ff3b30" /> -->
+
+    <!-- Canonical + social cards -->
+    <link rel="canonical" href="https://fishing-lure-site.vercel.app/" />
     <meta property="og:title" content="RIP Custom Lures" />
-    <meta property="og:description" content="Custom, hand-made fishing lures." />
+    <meta property="og:description" content="Custom-crafted fishing lures and a gallery of real catches." />
     <meta property="og:type" content="website" />
-    <!-- Replace with your live domain when ready -->
-    <meta property="og:image" content="https://YOURDOMAIN.com/icon.png" />
+    <meta property="og:url" content="https://fishing-lure-site.vercel.app/" />
+    <meta property="og:image" content="https://fishing-lure-site.vercel.app/images/logo-rip.png" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Early theme hydration to avoid flash -->
+    <!-- Early theme attribute to avoid flash; defaults to dark if no preference stored -->
     <script>
       (function () {
         try {
           var stored = localStorage.getItem('theme');
-          var prefersDark =
-            window.matchMedia &&
-            window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var theme = stored || (prefersDark ? 'dark' : 'light');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (prefersDark ? 'dark' : 'dark'); // default to dark brand
           document.documentElement.setAttribute('data-theme', theme);
         } catch {}
       })();
     </script>
-  
-    <!-- POLISH: brand favicon & social preview -->
-    <link rel="icon" href="/images/logo-rip.png">
-    <link rel="apple-touch-icon" href="/images/logo-rip-512.png" sizes="180x180">
-    <meta property="og:site_name" content="RIP Custom Lures">
-    <meta property="og:title" content="RIP Custom Lures">
-    <meta property="og:description" content="Custom, hand-made fishing lures. Built to be fished—not framed.">
-    <meta property="og:image" content="/images/logo-rip-512.png">
-    <meta name="twitter:card" content="summary_large_image">
 
-</head>
-  <body style="margin:0; background:#0b1220; color:#e6edf3;">
+    <!-- Tiny polish: preload header logo for a sharper first paint -->
+    <link rel="preload" as="image" href="/images/logo-rip.png" />
+
+    <!-- Optional: Stripe perf (used by checkout) -->
+    <link rel="preconnect" href="https://js.stripe.com" />
+    <link rel="dns-prefetch" href="https://js.stripe.com" />
+  </head>
+  <body style="margin:0; background:#0a1220; color:#e6edf3;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -5,7 +5,6 @@
     <title>Admin • RIP Custom Lures</title>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <!-- Make all relative URLs resolve to /admin/... -->
     <base href="/admin/">
 
@@ -13,11 +12,11 @@
     <script>window.CMS_MANUAL_INIT = true;</script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
-    <!-- Lightweight styles + the "Owner Guide" button -->
     <style>
       :root { color-scheme: light dark; }
-      html, body { height:100%; }
-      body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+      html, body { height: 100%; }
+      body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+
       .guide-btn {
         position: fixed; top: 16px; right: 16px; z-index: 9999;
         background: #0b1220; color: #fff; padding: 10px 14px; border-radius: 10px;
@@ -63,20 +62,22 @@
           document.body.appendChild(wrap);
         };
 
-        // Try to boot Decap when it’s ready
+        // Boot Decap with explicit config path and preview styles
         const boot = () => {
           try {
-            // Load config explicitly so it works at /admin (no trailing slash)
             CMS.init({ load_config_file: true, config_path: 'config.yml' });
 
-            // Optional: style the preview iframe (kept very small on purpose)
-            CMS.registerPreviewStyle('preview.css');
+            // Load your site theme into the preview iframe so it looks identical to production
+            CMS.registerPreviewStyle('/styles/tokens.css');
+            CMS.registerPreviewStyle('/styles/base.css');
+            // CMS-only preview tweaks
+            CMS.registerPreviewStyle('/admin/preview.css');
           } catch (e) {
             showError('Admin failed to start', e?.message || 'Unknown error');
           }
         };
 
-        // Wait for the CMS global to be present, then init
+        // Wait for Decap to be ready
         let tries = 0;
         const tick = setInterval(() => {
           tries++;

@@ -17,6 +17,10 @@ export default function App() {
     <BrowserRouter>
       <ToastProvider>
         <Header />
+
+        {/* Skip-link target -- matches your base.css a[href="#main"] styles */}
+        <div id="main" tabIndex={-1} />
+
         <Routes>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
@@ -28,6 +32,7 @@ export default function App() {
           <Route path="cancel" element={<Cancel />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+
         <Footer />
       </ToastProvider>
     </BrowserRouter>
