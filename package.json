@@ -8,12 +8,16 @@
   },
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/logo-pipeline.mjs && node scripts/build-catalog.mjs && node scripts/build-catches.mjs && node scripts/build-sitemap.mjs",
+    "prebuild": "node scripts/build-catalog.mjs && node scripts/build-catches.mjs && node scripts/build-sitemap.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "audit": "node scripts/validate-repo.mjs",
     "catalog:build": "node scripts/build-catalog.mjs",
-    "logo:build": "node scripts/logo-pipeline.mjs"
+
+    // --- logo tasks (run locally when logo changes) ---
+    "logo:build": "node scripts/logo-pipeline.mjs",
+    "logo:quick": "LOGO_QUICK=1 node scripts/logo-pipeline.mjs",
+    "logo:force-ci": "LOGO_PIPELINE=force node scripts/logo-pipeline.mjs"
   },
   "dependencies": {
     "@stripe/stripe-js": "^2.4.0",
@@ -30,7 +34,7 @@
     "@types/react-dom": "^18.2.23",
     "@vercel/node": "^5.3.24",
     "@vitejs/plugin-react": "^4.3.1",
-    "potrace": "^2.1.8",
+    "node-potrace": "^2.1.6",
     "sharp": "^0.33.5",
     "svgo": "^3.3.2",
     "typescript": "^5.5.4",

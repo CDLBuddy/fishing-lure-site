@@ -1,3 +1,4 @@
+// scripts/logo-pipeline.mjs
 /**
  * RIP Custom Lures -- High-fidelity logo pipeline
  *
@@ -5,34 +6,35 @@
  *   assets/logo/source.png  (hi-res; ideally ≥ 2400px wide; transparent bg)
  *
  * OUTPUT (to public/images/)
- *   logo-rip@2x.png  (2400w)     • normalized master
- *   logo-rip.png     (1200w)     • standard header fallback
- *   logo-rip@2x.webp,  logo-rip.webp
- *   logo-rip@2x.avif,  logo-rip.avif
- *   logo-rip.svg                 • best color trace (auto-selected)
- *   logo-rip-mono.svg            • one-color mark
- *   ../_logo-preview.html        • quick visual QA page
+ *   logo-rip@2x.png (2400w), logo-rip.png (1200w)
+ *   logo-rip@2x.webp / .webp,  logo-rip@2x.avif / .avif
+ *   logo-rip.svg (best color trace), logo-rip-mono.svg (1-color mark)
+ *   public/_logo-preview.html (visual QA)
  *
  * BEHAVIOR
- *   1) Normalize / upscale with sharp (soft fallback if sharp fails)
- *   2) Sweep Posterize (color) params; score each by pixel MAE vs source → pick lowest error
- *   3) If error > 0.065, widen search (steps 16–20, optTolerance 0.3–0.5) and retry
- *   4) Build mono mark via Potrace (threshold sweep → best)
- *   5) Optimize SVGs via SVGO; keep viewBox; remove dimensions
- *   6) If tracing fails (e.g., CI env), keep PNG/WebP/AVIF and log a warning (no hard fail)
+ *   - Normalizes with sharp (soft fallbacks if sharp fails)
+ *   - Traces color via Posterize sweep (auto-picks lowest MAE vs source)
+ *   - If error > 0.065, widens search window and retries
+ *   - Traces mono via Potrace threshold sweep
+ *   - Optimizes SVG via SVGO (keeps viewBox; removes dimensions)
+ *   - **CI guard:** on CI/Vercel it *skips tracing* unless LOGO_PIPELINE=force
+ *   - **Quick mode:** LOGO_QUICK=1 runs a tiny sweep for fast iteration
  */
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
-import potracePkg from 'potrace'
+import { Potrace, Posterize } from 'node-potrace'
 import { optimize } from 'svgo'
-
-const { Potrace, Posterizer } = potracePkg
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
+
+// ---- config & guards --------------------------------------------------------
+const isCI = process.env.CI === 'true' || !!process.env.VERCEL
+const forceCI = (process.env.LOGO_PIPELINE || '').toLowerCase() === 'force'
+const quick = /^(1|true|yes)$/i.test(process.env.LOGO_QUICK || '')
 
 const SRC = path.join(root, 'assets', 'logo', 'source.png')
 const OUTDIR = path.join(root, 'public', 'images')
@@ -44,7 +46,6 @@ const OUT_AVIF2 = path.join(OUTDIR, 'logo-rip@2x.avif')
 const OUT_AVIF = path.join(OUTDIR, 'logo-rip.avif')
 const OUT_SVG = path.join(OUTDIR, 'logo-rip.svg')
 const OUT_SVG_MONO = path.join(OUTDIR, 'logo-rip-mono.svg')
-
 const PREVIEW = path.join(root, 'public', '_logo-preview.html')
 
 const TARGET_W_2X = 2400
@@ -54,12 +55,7 @@ const log = (...a) => console.log('[logo]', ...a)
 const warn = (...a) => console.warn('[logo]', ...a)
 
 async function exists(p) {
-  try {
-    await fs.stat(p)
-    return true
-  } catch {
-    return false
-  }
+  try { await fs.stat(p); return true } catch { return false }
 }
 
 function svgo(svg) {
@@ -68,12 +64,13 @@ function svgo(svg) {
     plugins: [
       { name: 'preset-default', params: { overrides: { removeViewBox: false } } },
       'convertStyleToAttrs',
-      'removeDimensions',
-    ],
+      'removeDimensions'
+    ]
   })
   return data
 }
 
+// ---- raster normalization ----------------------------------------------------
 async function normalizeRasterOutputs() {
   await fs.mkdir(OUTDIR, { recursive: true })
   try {
@@ -82,7 +79,7 @@ async function normalizeRasterOutputs() {
     const width = meta.width || TARGET_W_2X
     const up = Math.max(1, Math.ceil(TARGET_W_2X / width))
 
-    // Master @2x PNG
+    // master @2x PNG
     await base
       .resize({ width: width * up })
       .sharpen(0.8)
@@ -95,19 +92,17 @@ async function normalizeRasterOutputs() {
       .png({ compressionLevel: 9, adaptiveFiltering: true })
       .toFile(OUT_PNG)
 
-    // WebP & AVIF (1x + 2x)
+    // webp/avif
     await sharp(OUT_PNG2).webp({ quality: 86 }).toFile(OUT_WEBP2)
     await sharp(OUT_PNG2).resize({ width: TARGET_W }).webp({ quality: 86 }).toFile(OUT_WEBP)
     await sharp(OUT_PNG2).avif({ quality: 70 }).toFile(OUT_AVIF2)
     await sharp(OUT_PNG2).resize({ width: TARGET_W }).avif({ quality: 70 }).toFile(OUT_AVIF)
 
-    log('✓ raster outputs:', path.basename(OUT_PNG2), path.basename(OUT_PNG), 'webp/avif')
+    log('✓ raster outputs ready')
     return true
   } catch (e) {
     warn('sharp failed, falling back to copying source only:', e?.message || e)
     if (!(await exists(SRC))) throw new Error(`Missing ${path.relative(root, SRC)}`)
-    // Best-effort copy as 2x; create a 1x by resizing only if sharp works
-    await fs.mkdir(OUTDIR, { recursive: true })
     await fs.copyFile(SRC, OUT_PNG2)
     try {
       await sharp(SRC).resize({ width: TARGET_W }).png({ compressionLevel: 9 }).toFile(OUT_PNG)
@@ -118,10 +113,10 @@ async function normalizeRasterOutputs() {
   }
 }
 
+// ---- helpers for scoring -----------------------------------------------------
 async function renderSvgToPng(svgStr, width = TARGET_W) {
   return await sharp(Buffer.from(svgStr)).resize({ width }).png().toBuffer()
 }
-
 async function maeAgainst(sourceBuf, candidateBuf) {
   const a = sharp(sourceBuf)
   const b = sharp(candidateBuf)
@@ -132,20 +127,19 @@ async function maeAgainst(sourceBuf, candidateBuf) {
   for (let i = 0; i < sa.length; i++) sum += Math.abs(sa[i] - sb[i])
   return sum / sa.length / 255
 }
-
 function countPaths(svgStr) {
   return (svgStr.match(/<path\b/gi) || []).length
 }
 
+// ---- tracing wrappers --------------------------------------------------------
 async function posterizeToSvg(opts) {
   return await new Promise((resolve, reject) => {
-    new Posterizer(opts).loadImage(OUT_PNG2, function (err) {
+    new Posterize(opts).loadImage(OUT_PNG2, function (err) {
       if (err) return reject(err)
-      this.getSVG((err2, svg) => (err2 ? reject(err2) : resolve(svg)))
+      this.getSVG((err2, svg) => err2 ? reject(err2) : resolve(svg))
     })
   })
 }
-
 async function potraceMono(threshold) {
   return await new Promise((resolve, reject) => {
     new Potrace({
@@ -155,28 +149,37 @@ async function potraceMono(threshold) {
       optTolerance: 0.4,
       threshold,
       background: 'transparent',
-      color: '#000000',
+      color: '#000000'
     }).loadImage(OUT_PNG2, function (err) {
       if (err) return reject(err)
-      this.getSVG((err2, svg) => (err2 ? reject(err2) : resolve(svg)))
+      this.getSVG((err2, svg) => err2 ? reject(err2) : resolve(svg))
     })
   })
 }
 
+// ---- color SVG (Posterize sweep) --------------------------------------------
 async function buildColorSvg() {
   const src1200 = await sharp(OUT_PNG2).resize({ width: TARGET_W }).png().toBuffer()
 
-  const initial = {
+  // Tiny grid for quick mode
+  const quickGrid = {
+    stepsList: [10, 14],
+    thresholds: [175, 185],
+    turdSizes: [14, 22],
+    optTols: [0.35, 0.5]
+  }
+
+  const initial = quick ? quickGrid : {
     stepsList: [8, 10, 12, 14],
     thresholds: [160, 170, 180, 190, 200],
     turdSizes: [10, 18, 25],
-    optTols: [0.35, 0.45, 0.6],
+    optTols: [0.35, 0.45, 0.6]
   }
-  const widen = {
+  const widen = quick ? null : {
     stepsList: [16, 18, 20],
     thresholds: [170, 180, 190],
     turdSizes: [12, 18, 24],
-    optTols: [0.3, 0.4, 0.5],
+    optTols: [0.3, 0.4, 0.5]
   }
 
   async function sweep(grid) {
@@ -185,25 +188,16 @@ async function buildColorSvg() {
       for (const threshold of grid.thresholds) {
         for (const turdSize of grid.turdSizes) {
           for (const optTolerance of grid.optTols) {
-            const rawSvg = await posterizeToSvg({
-              steps,
-              threshold,
-              turdSize,
-              optTolerance,
-              turnPolicy: 'minority',
-            })
+            const rawSvg = await posterizeToSvg({ steps, threshold, turdSize, optTolerance, turnPolicy: 'minority' })
             const svg = svgo(rawSvg)
             const png = await renderSvgToPng(svg, TARGET_W)
             const score = await maeAgainst(src1200, png)
             const paths = countPaths(svg)
             const size = Buffer.byteLength(svg)
             const cand = { svg, score, paths, size, steps, threshold, turdSize, optTolerance }
-            if (
-              !best ||
-              cand.score < best.score - 1e-6 ||
-              (Math.abs(cand.score - best.score) < 1e-6 &&
-                (cand.paths < best.paths || (cand.paths === best.paths && cand.size < best.size)))
-            ) {
+            if (!best
+              || cand.score < best.score - 1e-6
+              || (Math.abs(cand.score - best.score) < 1e-6 && (cand.paths < best.paths || (cand.paths === best.paths && cand.size < best.size)))) {
               best = cand
             }
           }
@@ -214,32 +208,25 @@ async function buildColorSvg() {
   }
 
   let best = await sweep(initial)
-  if (best?.score > 0.065) {
-    log(`color sweep widening (current error≈${best.score.toFixed(4)})`)
+  if (!quick && best?.score > 0.065 && widen) {
+    log(`widening color sweep (err≈${best.score.toFixed(4)})`)
     const wider = await sweep(widen)
-    if (
-      wider &&
-      (wider.score < best.score - 1e-6 ||
-        (Math.abs(wider.score - best.score) < 1e-6 &&
-          (wider.paths < best.paths || wider.size < best.size)))
-    ) {
+    if (wider && (wider.score < best.score - 1e-6
+      || (Math.abs(wider.score - best.score) < 1e-6 && (wider.paths < best.paths || wider.size < best.size)))) {
       best = wider
     }
   }
 
   if (!best) throw new Error('Posterize sweep produced no candidates')
   await fs.writeFile(OUT_SVG, best.svg)
-  log(
-    `✓ color svg -> ${path.basename(OUT_SVG)}  (steps=${best.steps}, thr=${best.threshold}, turd=${
-      best.turdSize
-    }, tol=${best.optTolerance}, err≈${best.score.toFixed(4)}, paths=${best.paths})`
-  )
+  log(`✓ color svg -> ${path.basename(OUT_SVG)} (steps=${best.steps}, thr=${best.threshold}, turd=${best.turdSize}, tol=${best.optTolerance}, err≈${best.score.toFixed(4)}, paths=${best.paths})`)
   return best
 }
 
+// ---- mono SVG (Potrace thresholds) ------------------------------------------
 async function buildMonoSvg() {
   const src1200 = await sharp(OUT_PNG2).resize({ width: TARGET_W }).png().toBuffer()
-  const trials = [150, 160, 170, 180, 190, 200]
+  const trials = quick ? [170, 185] : [150, 160, 170, 180, 190, 200]
   let best = null
   for (const threshold of trials) {
     const raw = await potraceMono(threshold)
@@ -249,49 +236,36 @@ async function buildMonoSvg() {
     const paths = countPaths(svg)
     const size = Buffer.byteLength(svg)
     const cand = { svg, score, paths, size, threshold }
-    if (
-      !best ||
-      cand.score < best.score - 1e-6 ||
-      (Math.abs(cand.score - best.score) < 1e-6 &&
-        (cand.paths < best.paths || cand.size < best.size))
-    ) {
+    if (!best
+      || cand.score < best.score - 1e-6
+      || (Math.abs(cand.score - best.score) < 1e-6 && (cand.paths < best.paths || cand.size < best.size))) {
       best = cand
     }
   }
   await fs.writeFile(OUT_SVG_MONO, best.svg)
-  log(
-    `✓ mono svg -> ${path.basename(OUT_SVG_MONO)} (thr=${best.threshold}, err≈${best.score.toFixed(
-      4
-    )}, paths=${best.paths})`
-  )
+  log(`✓ mono svg -> ${path.basename(OUT_SVG_MONO)} (thr=${best.threshold}, err≈${best.score.toFixed(4)}, paths=${best.paths})`)
   return best
 }
 
+// ---- preview page ------------------------------------------------------------
 async function writePreview(colorBest, monoBest) {
   const html = `<!doctype html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Logo Preview</title>
 <style>
   :root { color-scheme: light dark; --bg:#0b1220; --card:#0f172a; --txt:#e6edf3; }
-  body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background: var(--bg); color: var(--txt) }
+  body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; background:var(--bg); color:var(--txt) }
   .wrap { padding:24px; display:grid; gap:16px; max-width:1100px; margin:0 auto }
   .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px }
-  .card { background: var(--card); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px }
+  .card { background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px }
   .plate { display:flex; align-items:center; justify-content:center; padding:12px; border-radius:10px; background:#0e1528; border:1px solid rgba(255,255,255,.08) }
   img, svg { display:block; max-width:100%; height:auto }
   code { background:#0003; padding:2px 6px; border-radius:6px }
 </style>
 <div class="wrap">
   <h1>Logo Preview</h1>
-  <div>Best color trace: <code>steps=${colorBest.steps}, threshold=${
-    colorBest.threshold
-  }, turdSize=${colorBest.turdSize}, optTolerance=${
-    colorBest.optTolerance
-  }, error≈${colorBest.score.toFixed(4)}</code></div>
-  <div>Best mono trace: <code>threshold=${monoBest.threshold}, error≈${monoBest.score.toFixed(
-    4
-  )}</code></div>
+  <div>Best color trace: <code>steps=${colorBest.steps}, threshold=${colorBest.threshold}, turdSize=${colorBest.turdSize}, optTolerance=${colorBest.optTolerance}, error≈${colorBest.score.toFixed(4)}</code></div>
+  <div>Best mono trace: <code>threshold=${monoBest.threshold}, error≈${monoBest.score.toFixed(4)}</code></div>
   <div class="grid">
     <div class="card"><h3>Source (normalized)</h3><img src="/images/logo-rip@2x.png" alt=""></div>
     <div class="card"><h3>Color SVG</h3><div class="plate"><img src="/images/logo-rip.svg" alt=""></div></div>
@@ -304,6 +278,7 @@ async function writePreview(colorBest, monoBest) {
   log('✓ wrote preview ->', path.relative(root, PREVIEW))
 }
 
+// ---- main -------------------------------------------------------------------
 async function run() {
   if (!(await exists(SRC))) {
     console.error(`❌ Missing ${path.relative(root, SRC)}. Put a hi-res PNG there (≥ 2400px).`)
@@ -311,10 +286,11 @@ async function run() {
   }
 
   const rastersOK = await normalizeRasterOutputs()
+  if (!rastersOK) { warn('Skipping SVG tracing due to sharp failure; PNGs are in place.'); return }
 
-  // If sharp failed hard, skip tracing but succeed build with warning
-  if (!rastersOK) {
-    warn('Skipping SVG tracing due to sharp failure; PNGs are in place.')
+  // CI guard: skip tracing unless forced
+  if (isCI && !forceCI) {
+    warn('CI environment detected -- skipping SVG tracing (set LOGO_PIPELINE=force to override).')
     return
   }
 
@@ -327,7 +303,4 @@ async function run() {
   }
 }
 
-run().catch((e) => {
-  console.error(e)
-  process.exit(1)
-})
+run().catch((e) => { console.error(e); process.exit(1) })
